@@ -1,0 +1,23 @@
+{
+  "name": "sping",
+  "version": "1.0.0",
+  "description": "Sping assesment assignment",
+  "main": "server/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.swagmentationfault.com:svanschooten/sping.git"
+  },
+  "author": "Stijn van Schooten",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.2.1",
+    "body-parser": "^1.14.0",
+    "express": "^4.13.3",
+    "mysql": "^2.9.0",
+    "node-uuid": "^1.4.3",
+    "nodejs-websocket": "^1.4.0"
+  }
+}

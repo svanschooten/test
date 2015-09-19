@@ -4,6 +4,7 @@ var websocket = require("nodejs-websocket");
 var uuid = require('node-uuid');
 var mysql = require('mysql');
 var bcrypt = require('bcryptjs');
+var fs = require("fs");
 var app = express();
 var tokens = {
 	users: {},
@@ -22,6 +23,17 @@ var db = mysql.createConnection({
 	database : 'd237h1_locify'
 });
 
+var log = function(err) {
+	var d = new Date(), logfile = "log/" + d.getDate() + "-" + d.getMonth() + "-" +  d.getYear() + ".log";
+	fs.stat(logfile, function(err) {
+		if (err == null) {
+			fs.appendFile(logfile, JSON.stringify(err));
+		} else {
+			fs.writeFile(logfile, JSON.stringify(err));
+		}
+	});
+}
+
 var operator_server = websocket.createServer(function (connection) {
 	var oid;
 	connection.on("text", function (msg) {
@@ -37,6 +49,12 @@ var operator_server = websocket.createServer(function (connection) {
 					break;
 				case "update":
 					db.query(mysql.format('UPDATE ?? SET ?? = ? WHERE ?? = ?', ['locifications', 'status', data.status, 'lid', data.lid]), function (err, result) {
+						if (err) {
+							log(err);
+							connection.sendText(JSON.stringify({
+								success: false
+							}));
+						}
 						if (result.changedRows === 1) {
 							connection.sendText(JSON.stringify({
 								success: true
@@ -62,15 +80,25 @@ var operator_server = websocket.createServer(function (connection) {
 
 app.post('/api/user/get/statusses', function (req, res) {
 	db.query(mysql.format("SELECT * FROM ??", ['statusses']), function(err, rows) {
-		res.json(rows.map(function(row){
+		if (err) {
+			log(err);
+			res.status(500).send('Server error');
+			return;
+		}
+		res.json(rows.concat([]).map(function(row){
 			return row;
 		}));
 	});
 });
 
 app.post('/api/user/get/stations', function (req, res) {
-	db.query(mysql.format("SELECT * FROM ??", ['stations']), function(err, rows) {
-		res.json(rows.map(function(row){
+	db.query(mysql.format("SELECT ??, ??, ??, ?? FROM ??", ['sid', 'name', 'city', 'adress', 'stations']), function(err, rows) {
+		if (err) {
+			log(err);
+			res.status(500).send('Server error');
+			return;
+		}
+		res.json(rows.concat([]).map(function(row){
 			return row;
 		}));
 	});
@@ -90,6 +118,7 @@ app.post('/api/user/login', function (req, res) {
 	} else if (req.body.email, req.body.password) {
 		db.query(mysql.format("SELECT * FROM ?? WHERE ?? = ? AND ?? = ?", ['users', 'email', req.body.email, 'password', req.body.password]), function(err, rows) {
 			if (err) {
+				log(err);
 				res.status(500).send('Server error');
 				return;
 			}
@@ -103,7 +132,7 @@ app.post('/api/user/login', function (req, res) {
 					token: tokens.users[rows[0]['uid']]
 				});
 			} else {
-				res.status(500).send('Server error');
+				res.status(401).send('Unauthorized');
 			}
 		});
 	} else {
@@ -115,6 +144,7 @@ app.post('/api/user/register', function (req, res) {
 	if (req.body.name && req.body.email && req.body.password) {
 		db.query(mysql.format("SELECT * FROM ?? WHERE ?? = ?", ['users', 'email', req.body.email]), function(err, rows) {
 			if (err) {
+				log(err);
 				res.status(500).send('Server error');
 				return;
 			}
@@ -124,12 +154,13 @@ app.post('/api/user/register', function (req, res) {
 					reason: "User already exists with that email"
 				});
 			} else {
-				db.query(mysql.format("INSERT INTO users SET ?", {
+				db.query("INSERT INTO users SET ?", {
 					'name': req.body.name, 
 					'email': req.body.email, 
 					'password': req.body.password
 				}, function (err, result) {
 					if (err) {
+						log(err);
 						res.status(500).send('Server error');
 						return;
 					}
@@ -170,6 +201,7 @@ app.post('/api/user/notify', function (req, res) {
 				'status': 1
 			}, function (err, result) {
 				if (err) {
+					log(err);
 					res.status(500).send('Server error');
 					return;
 				}
@@ -177,13 +209,15 @@ app.post('/api/user/notify', function (req, res) {
 					success: true,
 					lid: result.insertId,
 				});
-				db.query(mysql.format("SELECT * FROM ?? WHERE ?? = ?", ['operators', 'station', req.body.station]), function(err, rows) {
+				db.query(mysql.format("SELECT ?? FROM ?? WHERE ?? = ?", ['oid', 'operators', 'station', req.body.station]), function(err, rows) {
 					rows.forEach(function(row){
-						connections[row['oid']].sendText(JSON.stringify({
-							oid: row['oid'],
-							target: req.body.station,
-							lid: result.insertId
-						}));
+						if (connections[row['oid']]) {
+							connections[row['oid']].sendText(JSON.stringify({
+								oid: row['oid'],
+								target: req.body.station,
+								lid: result.insertId
+							}));
+						}
 					});
 				});
 			});
@@ -209,6 +243,7 @@ app.post('/api/operator/login', function (req, res) {
 	} else if (req.body.email, req.body.password) {
 		db.query(mysql.format("SELECT * FROM ?? WHERE ?? = ? AND ?? = ?", ['operators', 'email', req.body.email, 'password', req.body.password]), function(err, rows) {
 			if (err) {
+				log(err);
 				res.status(500).send('Server error');
 				return;
 			}
@@ -222,7 +257,7 @@ app.post('/api/operator/login', function (req, res) {
 					token: tokens.operators[rows[0]['oid']]
 				});
 			} else {
-				res.status(500).send('Server error');
+				res.status(401).send('Unauthorized');
 			}
 		});
 	} else {
@@ -234,6 +269,7 @@ app.post('/api/operator/register', function (req, res) {
 	if (req.body.name && req.body.email && req.body.password && req.body.station && req.body.stationcode) {
 		db.query(mysql.format("SELECT * FROM ?? WHERE ?? = ?", ['users', 'email', req.body.email]), function(err, rows) {
 			if (err) {
+				log(err);
 				res.status(500).send('Server error');
 				return;
 			}
@@ -245,6 +281,7 @@ app.post('/api/operator/register', function (req, res) {
 			} else {
 				db.query(mysql.format("SELECT * FROM ?? WHERE ?? = ?", ['stations', 'sid', req.body.station]), function(err, rows) {
 					if (err) {
+						log(err);
 						res.status(500).send('Server error');
 						return;
 					}
@@ -256,6 +293,7 @@ app.post('/api/operator/register', function (req, res) {
 							'station': req.body.station
 						}, function (err, result) {
 							if (err) {
+								log(err);
 								res.status(500).send('Server error');
 								return;
 							}
@@ -288,7 +326,7 @@ app.post('/api/operator/logout', function (req, res) {
 	}
 });
 
-var server = app.listen(80, function () {
+var server = app.listen(8080, function () {
 	var host = server.address().address;
 	var port = server.address().port;
 

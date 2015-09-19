@@ -10,18 +10,36 @@ var tokens = {
 	users: {},
 	operators: {}
 };
-var connections = {};
+var connections = {}, db;
 
 app.use(express.static('user'));
 app.use("/operator", express.static('operator'));
 app.use(bodyParser.json());
 
-var db = mysql.createConnection({
-	host: 'mysql.eu.dualdev.com',
-	user: 'd237h1_locify',
-	password : 'a5sgFo5',
-	database : 'd237h1_locify'
-});
+(function makeConn() {
+	db = mysql.createConnection({
+		host: 'mysql.eu.dualdev.com',
+		user: 'd237h1_locify',
+		password : 'a5sgFo5',
+		database : 'd237h1_locify'
+	});
+	db.connect(function(err) {
+		if (err) {
+			log(err);
+			return;
+		}
+		console.log('connected as id ' + db.threadId);
+	});
+	db.on('error', function(err) {
+		if (err.code === "PROTOCOL_CONNECTION_LOST") {
+			makeConn();
+		} else {
+			log(err);
+			return;
+		}
+	});
+})();
+
 
 var log = function(err) {
 	var d = new Date(), logfile = "log/" + d.getDate() + "-" + d.getMonth() + "-" +  d.getYear() + ".log";
@@ -48,7 +66,7 @@ var operator_server = websocket.createServer(function (connection) {
 					}));
 					break;
 				case "update":
-					db.query(mysql.format('UPDATE ?? SET ?? = ? WHERE ?? = ?', ['locifications', 'status', data.status, 'lid', data.lid]), function (err, result) {
+					db.query(mysql.format('UPDATE ?? SET ?? = ?, ?? = ?? WHERE ?? = ?', ['locifications', 'status', data.status, 'modified_at', 'CURRENT_TIMESTAMP', 'lid', data.lid]), function (err, result) {
 						if (err) {
 							log(err);
 							connection.sendText(JSON.stringify({
@@ -78,7 +96,7 @@ var operator_server = websocket.createServer(function (connection) {
 	});
 }).listen(8001);
 
-app.post('/api/user/get/statusses', function (req, res) {
+app.get('/api/user/get/statusses', function (req, res) {
 	db.query(mysql.format("SELECT * FROM ??", ['statusses']), function(err, rows) {
 		if (err) {
 			log(err);
@@ -91,16 +109,33 @@ app.post('/api/user/get/statusses', function (req, res) {
 	});
 });
 
-app.post('/api/user/get/stations', function (req, res) {
-	db.query(mysql.format("SELECT ??, ??, ??, ?? FROM ??", ['sid', 'name', 'city', 'adress', 'stations']), function(err, rows) {
+app.get('/api/user/get/stations', function (req, res) {
+	db.query(mysql.format("SELECT ??, ??, ??, ?? FROM ??", ['sid', 'name', 'city', 'address', 'stations']), function(err, rows) {
 		if (err) {
 			log(err);
 			res.status(500).send('Server error');
 			return;
 		}
-		res.json(rows.concat([]).map(function(row){
-			return row;
-		}));
+		var stations = rows;
+		db.query(mysql.format("SELECT ??, ?? FROM ??, ?? WHERE ?? = ??", ['operators.oid', 'stations.sid', 'operators', 'stations', 'operators.station', 'stations.sid']), function(err, rows) {
+			if (err) {
+				log(err);
+				res.status(500).send('Server error');
+				return;
+			}
+			var i, ops = {};
+			for (i = 0; i < rows.length; i++) {
+				if (ops[rows[i]['sid']]) {
+					ops[rows[i]['sid']] = ops[rows[i]['sid']] + (connections[rows[i]['oid']] ? 1 : 0);
+				} else {
+					ops[rows[i]['sid']] = (connections[rows[i]['oid']] ? 1 : 0);
+				}
+			}
+			res.json(stations.concat([]).map(function(station){
+				station["ops"] = ops[station['sid']] ? ops[station['sid']] : 0;
+				return station;
+			}));
+		});
 	});
 });
 
@@ -116,13 +151,13 @@ app.post('/api/user/login', function (req, res) {
 			res.status(401).send('Unauthorized');
 		}
 	} else if (req.body.email, req.body.password) {
-		db.query(mysql.format("SELECT * FROM ?? WHERE ?? = ? AND ?? = ?", ['users', 'email', req.body.email, 'password', req.body.password]), function(err, rows) {
+		db.query(mysql.format("SELECT * FROM ?? WHERE ?? = ?", ['users', 'email', req.body.email]), function(err, rows) {
 			if (err) {
 				log(err);
 				res.status(500).send('Server error');
 				return;
 			}
-			if (rows.length === 1) {
+			if (rows.length === 1 && bcrypt.compareSync(req.body.password, rows[0]['password'])) {
 				if (!tokens.users[rows[0]['uid']]) {
 					tokens.users[rows[0]['uid']] = uuid.v4();
 				}
@@ -157,7 +192,7 @@ app.post('/api/user/register', function (req, res) {
 				db.query("INSERT INTO users SET ?", {
 					'name': req.body.name, 
 					'email': req.body.email, 
-					'password': req.body.password
+					'password': bcrypt.hashSync(req.body.password, 10)
 				}, function (err, result) {
 					if (err) {
 						log(err);
@@ -178,6 +213,25 @@ app.post('/api/user/register', function (req, res) {
 	}
 });
 
+app.post('/api/user/get/locifications', function (req, res) {
+	if (req.body.uid && req.body.token){
+		if (tokens.users[req.body.uid] === req.body.token) {
+			db.query(mysql.format("SELECT * FROM ?? WHERE ?? = ? ORDER BY ?? DESC", ['locifications', 'uid', req.body.uid, 'created_at']), function(err, rows) {
+				if (err) {
+					log(err);
+					res.status(500).send('Server error');
+					return;
+				}
+				res.json(rows);
+			});
+		} else {
+			res.status(401).send('Unauthorized');
+		}
+	} else {
+		res.status(400).send('Bad request');
+	}
+});
+
 app.post('/api/user/logout', function (req, res) {
 	if (req.body.uid && tokens.users[req.body.uid]) {
 		delete tokens.users[req.body.uid];
@@ -189,15 +243,15 @@ app.post('/api/user/logout', function (req, res) {
 	}
 });
 
-app.post('/api/user/notify', function (req, res) {
-	if (req.body.uid && req.body.token && req.body.station && req.body.location && req.body.location.latitude && req.body.location.longitude && req.body.message){
+app.post('/api/user/locify', function (req, res) {
+	if (req.body.uid && req.body.token && req.body.station && req.body.location && req.body.location.latitude && req.body.location.longitude){
 		if (tokens.users[req.body.uid] === req.body.token) {
 			db.query("INSERT INTO locifications SET ?", {
 				'uid': req.body.uid, 
 				'latitude': req.body.location.latitude, 
 				'longitude': req.body.location.longitude,
 				'station': req.body.station,
-				'message': req.body.message,
+				'message': req.body.message ? req.body.message : "",
 				'status': 1
 			}, function (err, result) {
 				if (err) {
@@ -241,13 +295,13 @@ app.post('/api/operator/login', function (req, res) {
 			res.status(401).send('Unauthorized');
 		}
 	} else if (req.body.email, req.body.password) {
-		db.query(mysql.format("SELECT * FROM ?? WHERE ?? = ? AND ?? = ?", ['operators', 'email', req.body.email, 'password', req.body.password]), function(err, rows) {
+		db.query(mysql.format("SELECT * FROM ?? WHERE ?? = ?", ['operators', 'email', req.body.email]), function(err, rows) {
 			if (err) {
 				log(err);
 				res.status(500).send('Server error');
 				return;
 			}
-			if (rows.length === 1) {
+			if (rows.length === 1 && bcrypt.compareSync(req.body.password, rows[0]['password'])) {
 				if (!tokens.operators[rows[0]['oid']]) {
 					tokens.operators[rows[0]['oid']] = uuid.v4();
 				}
@@ -289,7 +343,7 @@ app.post('/api/operator/register', function (req, res) {
 						db.query("INSERT INTO operators SET ?", {
 							'name': req.body.name, 
 							'email': req.body.email, 
-							'password': req.body.password,
+							'password': bcrypt.hashSync(req.body.password, 10),
 							'station': req.body.station
 						}, function (err, result) {
 							if (err) {

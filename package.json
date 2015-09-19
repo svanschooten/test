@@ -13,11 +13,16 @@
   "author": "Stijn van Schooten",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.5.4",
     "bcryptjs": "^2.2.1",
     "body-parser": "^1.14.0",
     "express": "^4.13.3",
+    "material-ui": "^0.7.0",
     "mysql": "^2.9.0",
     "node-uuid": "^1.4.3",
-    "nodejs-websocket": "^1.4.0"
+    "nodejs-websocket": "^1.4.0",
+    "react": "^0.13.3",
+    "react-tap-event-plugin": "^0.1.7",
+    "reactify": "^1.1.1"
   }
 }

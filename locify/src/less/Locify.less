@@ -1,0 +1,46 @@
+#locify-main {
+	.current-position {
+		display: flex;
+		justify-content: center;
+		color: steelblue;
+		font-weight: 500;
+	}
+	.locify-wrapper-top {
+		.mui-paper-container {
+			padding: 1.5em;
+			padding-top: 0.5em;
+		}
+		.mui-raised-button .mui-paper-container {
+			padding: 0;
+		}
+		.mui-drop-down-menu {
+			width: 18em;
+		}
+	}
+	.locify-wrapper-bottom {
+		.mui-paper-container {
+			padding: 1.5em;
+		}
+		.locify-list {
+			.translocifications-enter {
+				opacity: 0.01;
+			}
+			.translocifications-enter.translocifications-enter-active {
+				opacity: 1;
+				transition: opacity .3s ease-in;
+			}
+			.translocifications-leave {
+			 	opacity: 1;
+			}
+			.translocifications-leave.translocifications-leave-active {
+				opacity: 0.01;
+				transition: opacity .3s ease-in;
+			}
+			max-height: 450px;
+			overflow: auto;
+			-webkit-overflow-scrolling: touch;
+		}
+		.station-info {
+		}
+	}
+}

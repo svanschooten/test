@@ -27,6 +27,15 @@
 		.mui-drop-down-menu {
 			width: 18em;
 		}
+		.message {
+			border: 1px groove darkgray;
+			margin-left: 5px;
+			border-radius: 3px;
+			padding: 3px;
+		}
+		.hidden {
+			display: none;
+		}
 	}
 	.locify-wrapper-bottom {
 		display: flex;
@@ -51,6 +60,28 @@
 				opacity: 0.01;
 				transition: opacity .3s ease-in;
 			}
+			@-webkit-keyframes blinker {  
+			    0% { opacity: 1.0; }
+			    50% { opacity: 0.0; }
+			    100% { opacity: 1.0; }
+			}
+
+			@keyframes blinker {  
+			    0% { opacity: 1.0; }
+			    50% { opacity: 0.0; }
+			    100% { opacity: 1.0; }
+			}
+			.blink {
+			    -webkit-animation-name: blinker;
+			    -webkit-animation-duration: 1s;
+			    -webkit-animation-timing-function: ease-in-out;
+			    -webkit-animation-iteration-count: 2;
+
+			    animation-name: blinker;
+			    animation-duration: 1s;
+			    animation-timing-function: ease-in-out;
+			    animation-iteration-count: 2;
+			}
 			.message {
 				float: right;
 				position: relative;
@@ -63,10 +94,32 @@
 			.status {
 				margin-left: 1em;
 			}
+			.locification-wrapper .mui-paper {
+				background: rgba(1, 1, 1, 0);
+				transition: background .1s ease-in-out;
+			}
+			.locification-wrapper .mui-paper:hover {
+				background: rgba(1, 1, 1, 0.1);
+			}
+			.unhandled {
+				background: rgba(255, 1, 1, 0.3);
+			}
+			.in.progress {
+				background: rgba(251, 255, 0, 0.3);
+			}
+			.handled {
+				background: rgba(2, 255, 0, 0.3);
+			}
+			.error {
+				background: rgba(91, 96, 255, 0.3);
+			}
 		}
 		.station-info {
 			flex-grow: 1;
 			margin-left: 1.5em;
+			.map-wrapper {
+			    margin-right: -400px;
+			}
 		}
 	}
 }

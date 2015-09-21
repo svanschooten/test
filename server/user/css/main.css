@@ -2656,7 +2656,7 @@ body,
 #locify-main #logout-btn {
   position: absolute;
   top: 1.5em;
-  right: -1.5em;
+  right: 0.5em;
   width: 10em;
 }
 #locify-main .current-position {
@@ -2720,6 +2720,22 @@ body,
   flex-grow: 1;
   margin-left: 1.5em;
 }
+#register-body #register-header {
+  width: 12em;
+  margin-left: auto;
+  margin-right: auto;
+  color: steelblue;
+}
+#register-body #register-header .fa {
+  margin-right: 0.5em;
+}
+#register-body .register-wrapper {
+  width: 20em;
+  display: flex;
+  flex-direction: column;
+  margin-left: auto;
+  margin-right: auto;
+}
 .mui-tab-item-container {
   background-color: #4527a0 !important;
 }
@@ -2737,4 +2753,7 @@ body,
 .mui-menu.mui-menu-hideable.mui-visible.mui-paper.mui-z-depth-1.mui-rounded {
   width: auto !important;
   height: auto !important;
+}
+.error {
+  color: #d32f2f;
 }

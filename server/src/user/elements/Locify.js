@@ -28,7 +28,7 @@ var Body = React.createClass({
 		};
 	},
 	render: function () {
-		var $this = this, 
+		var $this = this, i = 0, 
 			menu_items = (new Array({
 					text: "Select a station",
 					payload: -1
@@ -60,9 +60,12 @@ var Body = React.createClass({
 					<div className="locify-list">
 						<Paper zDepth={2}>
 							<ReactCSSTransitionGroup transitionName="translocifications">
-							{Object.keys(this.state.locifications).sort().reverse().map(function(lid) {
+							{ Object.keys(this.state.locifications).sort().reverse().map(function(lid) {
 								var loc = $this.state.locifications[lid];
-								return (<div className="locification-wrapper">
+								if (i > 25) {
+									return "";
+								}
+								return (<div key={lid} className="locification-wrapper" onClick={function () {$this.refresh()}}>
 									<Paper zDepth={1}>
 										<p>
 											<span>Date: {(new Date(loc.created_at.substring(0, loc.created_at.length - 1))).toString()}</span>
@@ -155,6 +158,20 @@ var Body = React.createClass({
 		}, {
 			enableHighAccuracy: true
 		});
+		request.get("api/user/get/statusses").then(function(res){
+			var status_object = {};
+			res.data.forEach(function(status) {
+				status_object[status["sid"]] = status;
+			});
+			$this.setState({
+				statusses: status_object
+			}, function () {
+				$this.refresh();
+			});
+		});
+	},
+	refresh: function (cb) {
+		var $this = this;
 		request.get("api/user/get/stations").then(function(res){
 			var station_object = {};
 			res.data.forEach(function(station) {
@@ -163,40 +180,27 @@ var Body = React.createClass({
 			$this.setState({
 				stations: station_object
 			});
-		});
-		request.get("api/user/get/statusses").then(function(res){
-			var status_object = {};
-			res.data.forEach(function(status) {
-				status_object[status["sid"]] = status;
+			request.post("api/user/get/locifications", {
+				"uid": $this.props.credentials.uid,
+				"token": $this.props.credentials.token
+			}).then(function(res){
+				var locification_object = {};
+				res.data.forEach(function(loc) {
+					locification_object[loc["lid"]] = loc;
+				});
+				$this.setState({
+					locifications: locification_object
+				}, cb);
 			});
-			$this.setState({
-				statusses: status_object
-			});
-		});
-		this.refresh();
-	},
-	refresh: function (cb) {
-		var $this = this;
-		request.post("api/user/get/locifications", {
-			"uid": $this.props.credentials.uid,
-			"token": $this.props.credentials.token
-		}).then(function(res){
-			var locification_object = {};
-			res.data.forEach(function(loc) {
-				locification_object[loc["lid"]] = loc;
-			});
-			$this.setState({
-				locifications: locification_object
-			}, cb);
 		});
 	},
 	_logout: function () {
 		var $this = this;
 		navigator.geolocation.clearWatch(watchID);
-		this.props.logout(false);
 		request.post("api/user/logout", {
 			"uid": $this.props.credentials.uid
 		});
+		this.props.logout(false);
 	}
 });
 

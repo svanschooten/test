@@ -9,18 +9,18 @@ var React = require("react"),
 var Body = React.createClass({
 	getInitialState: function () {
 		var $this = this;
-		if (typeof(Storage) !== "undefined" && sessionStorage.uid && sessionStorage.token) {
-			request.post("api/user/login", {
-				"uid": sessionStorage.uid,
+		if (typeof(Storage) !== "undefined" && sessionStorage.oid && sessionStorage.token) {
+			request.post("/api/operator/login", {
+				"oid": sessionStorage.oid,
 				"token": sessionStorage.token
 			}).then(function(res){
 				if(res.data.success) {
 					$this.props.login(true, {
-						"uid": sessionStorage.uid,
+						"oid": sessionStorage.oid,
 						"token": sessionStorage.token
 					});
 				} else {
-					sessionStorage.removeItem("uid");
+					sessionStorage.removeItem("oid");
 					sessionStorage.removeItem("token");
 				}
 			});
@@ -50,15 +50,15 @@ var Body = React.createClass({
 	},
 	_evalLogin: function () {
 		var $this = this;
-		request.post("api/user/login", {
+		request.post("/api/operator/login", {
 			"email": $this.refs.email.getValue(),
 			"password": $this.refs.password.getValue()
 		}).then(function(res){
 			if(res.data.success) {
-				sessionStorage.setItem("uid", res.data.uid);
+				sessionStorage.setItem("oid", res.data.oid);
 				sessionStorage.setItem("token", res.data.token);
 				$this.props.login(true, {
-					"uid": res.data.uid,
+					"oid": res.data.oid,
 					"token": res.data.token
 				});
 			} else {

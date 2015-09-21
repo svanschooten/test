@@ -2636,30 +2636,168 @@ body,
   height: 100%;
   overflow: auto;
 }
-.button-only-ripple {
-  background-color: inherit;
-  height: 100%;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-  color: inherit;
-  text-transform: initial;
+#main-header {
+  width: 8em;
+  margin-left: auto;
+  margin-right: auto;
+  color: steelblue;
 }
-.hidden {
+#main-header .fa {
+  margin-right: 0.5em;
+}
+#login {
+  width: 256px;
+  height: 180px;
+  margin: auto;
+}
+#login .mui-raised-button {
+  float: right;
+}
+#locify-main #logout-btn {
+  position: absolute;
+  top: 1.5em;
+  right: 0.5em;
+  width: 10em;
+}
+#locify-main .current-position {
+  display: flex;
+  justify-content: center;
+  color: steelblue;
+  font-weight: 500;
+}
+#locify-main .locify-wrapper-top {
+  margin-top: 5em;
+  display: flex;
+  justify-content: center;
+}
+#locify-main .locify-wrapper-top .mui-paper-container {
+  padding: 1.5em;
+}
+#locify-main .locify-wrapper-top .mui-raised-button .mui-paper-container {
+  padding: 0;
+}
+#locify-main .locify-wrapper-top .mui-drop-down-menu {
+  width: 18em;
+}
+#locify-main .locify-wrapper-top .message {
+  border: 1px groove darkgray;
+  margin-left: 5px;
+  border-radius: 3px;
+  padding: 3px;
+}
+#locify-main .locify-wrapper-top .hidden {
   display: none;
 }
-.invisible {
-  overflow: hidden;
-  opacity: 0;
-  width: 0 !important;
-  height: 0 !important;
-  outline: none;
-  position: absolute;
-  top: -10px;
-  left: 10px;
+#locify-main .locify-wrapper-bottom {
+  display: flex;
+  justify-content: center;
+  padding: 3em;
 }
-.invisible:focus {
-  outline: none;
+#locify-main .locify-wrapper-bottom .mui-paper-container {
+  padding: 1.5em;
+}
+#locify-main .locify-wrapper-bottom .locify-list {
+  flex-grow: 2;
+}
+#locify-main .locify-wrapper-bottom .locify-list .translocifications-enter {
+  opacity: 0.01;
+}
+#locify-main .locify-wrapper-bottom .locify-list .translocifications-enter.translocifications-enter-active {
+  opacity: 1;
+  transition: opacity 0.3s ease-in;
+}
+#locify-main .locify-wrapper-bottom .locify-list .translocifications-leave {
+  opacity: 1;
+}
+#locify-main .locify-wrapper-bottom .locify-list .translocifications-leave.translocifications-leave-active {
+  opacity: 0.01;
+  transition: opacity 0.3s ease-in;
+}
+@-webkit-keyframes blinker {
+  0% {
+    opacity: 1.0;
+  }
+  50% {
+    opacity: 0.0;
+  }
+  100% {
+    opacity: 1.0;
+  }
+}
+@keyframes blinker {
+  0% {
+    opacity: 1.0;
+  }
+  50% {
+    opacity: 0.0;
+  }
+  100% {
+    opacity: 1.0;
+  }
+}
+#locify-main .locify-wrapper-bottom .locify-list .blink {
+  -webkit-animation-name: blinker;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-timing-function: ease-in-out;
+  -webkit-animation-iteration-count: 2;
+  animation-name: blinker;
+  animation-duration: 1s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: 2;
+}
+#locify-main .locify-wrapper-bottom .locify-list .message {
+  float: right;
+  position: relative;
+  bottom: 6em;
+  width: 40%;
+}
+#locify-main .locify-wrapper-bottom .locify-list .long {
+  margin-left: 1em;
+}
+#locify-main .locify-wrapper-bottom .locify-list .status {
+  margin-left: 1em;
+}
+#locify-main .locify-wrapper-bottom .locify-list .locification-wrapper .mui-paper {
+  background: rgba(1, 1, 1, 0);
+  transition: background 0.1s ease-in-out;
+}
+#locify-main .locify-wrapper-bottom .locify-list .locification-wrapper .mui-paper:hover {
+  background: rgba(1, 1, 1, 0.1);
+}
+#locify-main .locify-wrapper-bottom .locify-list .unhandled {
+  background: rgba(255, 1, 1, 0.3);
+}
+#locify-main .locify-wrapper-bottom .locify-list .in.progress {
+  background: rgba(251, 255, 0, 0.3);
+}
+#locify-main .locify-wrapper-bottom .locify-list .handled {
+  background: rgba(2, 255, 0, 0.3);
+}
+#locify-main .locify-wrapper-bottom .locify-list .error {
+  background: rgba(91, 96, 255, 0.3);
+}
+#locify-main .locify-wrapper-bottom .station-info {
+  flex-grow: 1;
+  margin-left: 1.5em;
+}
+#locify-main .locify-wrapper-bottom .station-info .map-wrapper {
+  margin-right: -400px;
+}
+#register-body #register-header {
+  width: 12em;
+  margin-left: auto;
+  margin-right: auto;
+  color: steelblue;
+}
+#register-body #register-header .fa {
+  margin-right: 0.5em;
+}
+#register-body .register-wrapper {
+  width: 20em;
+  display: flex;
+  flex-direction: column;
+  margin-left: auto;
+  margin-right: auto;
 }
 .mui-tab-item-container {
   background-color: #4527a0 !important;
@@ -2674,4 +2812,11 @@ body,
   background-color: #2eec3b;
   height: 4px;
   margin-top: -4px;
+}
+.mui-menu.mui-menu-hideable.mui-visible.mui-paper.mui-z-depth-1.mui-rounded {
+  width: auto !important;
+  height: auto !important;
+}
+.error {
+  color: #d32f2f;
 }

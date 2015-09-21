@@ -41,13 +41,13 @@ app.use(bodyParser.json());
 })();
 
 
-var log = function(err) {
+var log = function(text) {
 	var d = new Date(), logfile = "log/" + d.getDate() + "-" + d.getMonth() + "-" +  d.getYear() + ".log";
 	fs.stat(logfile, function(err) {
 		if (err == null) {
-			fs.appendFile(logfile, JSON.stringify(err));
+			fs.appendFile(logfile, JSON.stringify(text));
 		} else {
-			fs.writeFile(logfile, JSON.stringify(err));
+			fs.writeFile(logfile, JSON.stringify(text));
 		}
 	});
 }
@@ -62,23 +62,27 @@ var operator_server = websocket.createServer(function (connection) {
 					oid = data.oid;
 					connections[oid] = connection;
 					connection.sendText(JSON.stringify({
+						action: "register",
 						success: true
 					}));
 					break;
 				case "update":
-					db.query(mysql.format('UPDATE ?? SET ?? = ?, ?? = ?? WHERE ?? = ?', ['locifications', 'status', data.status, 'modified_at', 'CURRENT_TIMESTAMP', 'lid', data.lid]), function (err, result) {
+					db.query(mysql.format('UPDATE ?? SET ?? = ?, ?? = CURRENT_TIMESTAMP WHERE ?? = ?', ['locifications', 'status', data.status, 'modified_at', 'lid', data.lid]), function (err, result) {
 						if (err) {
 							log(err);
 							connection.sendText(JSON.stringify({
+								action: "update",
 								success: false
 							}));
 						}
 						if (result.changedRows === 1) {
 							connection.sendText(JSON.stringify({
+								action: "update",
 								success: true
 							}));
 						} else {
 							connection.sendText(JSON.stringify({
+								action: "update",
 								success: false
 							}));
 						}
@@ -267,9 +271,8 @@ app.post('/api/user/locify', function (req, res) {
 					rows.forEach(function(row){
 						if (connections[row['oid']]) {
 							connections[row['oid']].sendText(JSON.stringify({
-								oid: row['oid'],
-								target: req.body.station,
-								lid: result.insertId
+								"action": "locify",
+								"lid": result.insertId
 							}));
 						}
 					});
@@ -321,7 +324,7 @@ app.post('/api/operator/login', function (req, res) {
 
 app.post('/api/operator/register', function (req, res) {
 	if (req.body.name && req.body.email && req.body.password && req.body.station && req.body.stationcode) {
-		db.query(mysql.format("SELECT * FROM ?? WHERE ?? = ?", ['users', 'email', req.body.email]), function(err, rows) {
+		db.query(mysql.format("SELECT * FROM ?? WHERE ?? = ?", ['operators', 'email', req.body.email]), function(err, rows) {
 			if (err) {
 				log(err);
 				res.status(500).send('Server error');
@@ -359,10 +362,43 @@ app.post('/api/operator/register', function (req, res) {
 							});
 						});
 					} else {
-						res.status(401).send('Unauthorized');
+						res.json({
+							success: false,
+							reason: "Stationcode does not match with station"
+						});
 					}
 				});
 			}
+		});
+	} else {
+		res.status(400).send('Bad request');
+	}
+});
+
+app.post('/api/operator/get/locifications', function (req, res) {
+	if (req.body.oid && req.body.token){
+		if (tokens.operators[req.body.oid] === req.body.token) {
+			db.query(mysql.format("SELECT locifications.lid, locifications.uid, locifications.latitude, locifications.longitude, locifications.station, locifications.message, locifications.status, locifications.created_at, locifications.modified_at FROM locifications, operators WHERE ?? = ? AND ?? = ?? ORDER BY ?? DESC", ['operators.oid', req.body.oid, 'locifications.station', 'operators.station', 'created_at']), function(err, rows) {
+				if (err) {
+					log(err);
+					res.status(500).send('Server error');
+					return;
+				}
+				res.json(rows);
+			});
+		} else {
+			res.status(401).send('Unauthorized');
+		}
+	} else {
+		res.status(400).send('Bad request');
+	}
+});
+
+app.post('/api/user/logout', function (req, res) {
+	if (req.body.uid && tokens.operators[req.body.uid]) {
+		delete tokens.operators[req.body.uid];
+		res.json({
+			success: true
 		});
 	} else {
 		res.status(400).send('Bad request');

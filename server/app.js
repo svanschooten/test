@@ -378,7 +378,7 @@ app.post('/api/operator/register', function (req, res) {
 app.post('/api/operator/get/locifications', function (req, res) {
 	if (req.body.oid && req.body.token){
 		if (tokens.operators[req.body.oid] === req.body.token) {
-			db.query(mysql.format("SELECT locifications.lid, locifications.uid, locifications.latitude, locifications.longitude, locifications.station, locifications.message, locifications.status, locifications.created_at, locifications.modified_at FROM locifications, operators WHERE ?? = ? AND ?? = ?? ORDER BY ?? DESC", ['operators.oid', req.body.oid, 'locifications.station', 'operators.station', 'created_at']), function(err, rows) {
+			db.query(mysql.format("SELECT locifications.lid, locifications.uid, locifications.latitude, locifications.longitude, locifications.station, locifications.message, locifications.status, locifications.created_at, locifications.modified_at, users.name FROM locifications, operators, users WHERE ?? = ? AND ?? = ?? AND ?? = ?? ORDER BY ?? DESC", ['operators.oid', req.body.oid, 'locifications.station', 'operators.station', 'locifications.uid', 'users.uid', 'created_at']), function(err, rows) {
 				if (err) {
 					log(err);
 					res.status(500).send('Server error');

@@ -85,10 +85,8 @@ var Body = React.createClass({
 											<span className="long">Longitude: {(new String(loc.longitude)).substr(0, 10)}</span>
 										</p>
 										<div className="message">
-											{loc.message
-												?	<p>Message: {loc.message}</p>
-												:	""
-											}	
+											<p>User: [{loc.uid}] &nbsp; {loc.name}</p>
+											<p>Message: {loc.message}</p>	
 										</div>
 									</Paper>
 								</div>);
@@ -115,28 +113,6 @@ var Body = React.createClass({
 	handleCenterChange: function(map) {
 		this.setState({
 			center: map.getCenter()
-		});
-	},
-	_createLocification: function () {
-		var $this = this;
-		request.post("api/user/locify", {
-			"oid": $this.props.credentials.oid,
-			"token": $this.props.credentials.token,
-			"station": $this.state.current_station,
-			"location": {
-				"latitude": $this.state.location.latitude,
-				"longitude": $this.state.location.longitude
-			},
-			"message": $this.refs.newLocificationMessage.getValue()
-		}).then(function(res){
-			if (res.data.success) {
-				$this.refresh(function () {
-					$this.setState({
-						current_locification: res.data.lid
-					});
-					$this.refs.newLocificationMessage.clearValue();
-				});
-			}
 		});
 	},
 	_updateStatus: function () {

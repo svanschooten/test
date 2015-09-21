@@ -31387,10 +31387,8 @@ var Body = React.createClass({displayName: "Body",
 											React.createElement("span", {className: "long"}, "Longitude: ", (new String(loc.longitude)).substr(0, 10))
 										), 
 										React.createElement("div", {className: "message"}, 
-											loc.message
-												?	React.createElement("p", null, "Message: ", loc.message)
-												:	""
-												
+											React.createElement("p", null, "User: [", loc.uid, "]   ", loc.name), 
+											React.createElement("p", null, "Message: ", loc.message)	
 										)
 									)
 								));
@@ -31417,28 +31415,6 @@ var Body = React.createClass({displayName: "Body",
 	handleCenterChange: function(map) {
 		this.setState({
 			center: map.getCenter()
-		});
-	},
-	_createLocification: function () {
-		var $this = this;
-		request.post("api/user/locify", {
-			"oid": $this.props.credentials.oid,
-			"token": $this.props.credentials.token,
-			"station": $this.state.current_station,
-			"location": {
-				"latitude": $this.state.location.latitude,
-				"longitude": $this.state.location.longitude
-			},
-			"message": $this.refs.newLocificationMessage.getValue()
-		}).then(function(res){
-			if (res.data.success) {
-				$this.refresh(function () {
-					$this.setState({
-						current_locification: res.data.lid
-					});
-					$this.refs.newLocificationMessage.clearValue();
-				});
-			}
 		});
 	},
 	_updateStatus: function () {

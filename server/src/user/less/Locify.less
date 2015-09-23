@@ -1,13 +1,4 @@
 #locify-main {
-	.error {
-
-	}
-	#logout-btn {
-		position: absolute;
-		top: 1.5em;
-		right: 0.5em;
-		width: 10em;
-	}
 	.current-position {
 		display: flex;
 		justify-content: center;
@@ -15,11 +6,9 @@
 		font-weight: 500;
 	}
 	.locify-wrapper-top {
-		margin-top: 5em;
-		display: flex;
-		justify-content: center;
 		.mui-paper-container {
 			padding: 1.5em;
+			padding-top: 0.5em;
 		}
 		.mui-raised-button .mui-paper-container {
 			padding: 0;
@@ -29,14 +18,10 @@
 		}
 	}
 	.locify-wrapper-bottom {
-		display: flex;
-		justify-content: center;
-		padding: 3em;
 		.mui-paper-container {
 			padding: 1.5em;
 		}
 		.locify-list {
-			flex-grow: 2;
 			.translocifications-enter {
 				opacity: 0.01;
 			}
@@ -51,22 +36,85 @@
 				opacity: 0.01;
 				transition: opacity .3s ease-in;
 			}
-			.message {
-				float: right;
-				position: relative;
-				bottom: 6em;
-				width: 40%;
-			}
-			.long {
-				margin-left: 1em;
-			}
-			.status {
-				margin-left: 1em;
-			}
+			max-height: 450px;
+			overflow: auto;
+			-webkit-overflow-scrolling: touch;
 		}
 		.station-info {
-			flex-grow: 1;
-			margin-left: 1.5em;
+		}
+	}
+}
+@media only screen and (min-width : 480px) {
+	#locify-main {
+		.error {
+
+		}
+		#logout-btn {
+			position: absolute;
+			top: 1.5em;
+			right: 0.5em;
+			width: 10em;
+		}
+		.current-position {
+			display: flex;
+			justify-content: center;
+			color: steelblue;
+			font-weight: 500;
+		}
+		.locify-wrapper-top {
+			margin-top: 5em;
+			display: flex;
+			justify-content: center;
+			.mui-paper-container {
+				padding: 1.5em;
+			}
+			.mui-raised-button .mui-paper-container {
+				padding: 0;
+			}
+			.mui-drop-down-menu {
+				width: 18em;
+			}
+		}
+		.locify-wrapper-bottom {
+			display: flex;
+			justify-content: center;
+			padding: 3em;
+			.mui-paper-container {
+				padding: 1.5em;
+			}
+			.locify-list {
+				flex-grow: 2;
+				.translocifications-enter {
+					opacity: 0.01;
+				}
+				.translocifications-enter.translocifications-enter-active {
+					opacity: 1;
+					transition: opacity .3s ease-in;
+				}
+				.translocifications-leave {
+				 	opacity: 1;
+				}
+				.translocifications-leave.translocifications-leave-active {
+					opacity: 0.01;
+					transition: opacity .3s ease-in;
+				}
+				.message {
+					float: right;
+					position: relative;
+					bottom: 6em;
+					width: 40%;
+				}
+				.long {
+					margin-left: 1em;
+				}
+				.status {
+					margin-left: 1em;
+				}
+			}
+			.station-info {
+				flex-grow: 1;
+				margin-left: 1.5em;
+			}
 		}
 	}
 }

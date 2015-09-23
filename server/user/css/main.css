@@ -2653,25 +2653,15 @@ body,
 #login .mui-raised-button {
   float: right;
 }
-#locify-main #logout-btn {
-  position: absolute;
-  top: 1.5em;
-  right: 0.5em;
-  width: 10em;
-}
 #locify-main .current-position {
   display: flex;
   justify-content: center;
   color: steelblue;
   font-weight: 500;
 }
-#locify-main .locify-wrapper-top {
-  margin-top: 5em;
-  display: flex;
-  justify-content: center;
-}
 #locify-main .locify-wrapper-top .mui-paper-container {
   padding: 1.5em;
+  padding-top: 0.5em;
 }
 #locify-main .locify-wrapper-top .mui-raised-button .mui-paper-container {
   padding: 0;
@@ -2679,16 +2669,13 @@ body,
 #locify-main .locify-wrapper-top .mui-drop-down-menu {
   width: 18em;
 }
-#locify-main .locify-wrapper-bottom {
-  display: flex;
-  justify-content: center;
-  padding: 3em;
-}
 #locify-main .locify-wrapper-bottom .mui-paper-container {
   padding: 1.5em;
 }
 #locify-main .locify-wrapper-bottom .locify-list {
-  flex-grow: 2;
+  max-height: 450px;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 #locify-main .locify-wrapper-bottom .locify-list .translocifications-enter {
   opacity: 0.01;
@@ -2704,21 +2691,74 @@ body,
   opacity: 0.01;
   transition: opacity 0.3s ease-in;
 }
-#locify-main .locify-wrapper-bottom .locify-list .message {
-  float: right;
-  position: relative;
-  bottom: 6em;
-  width: 40%;
-}
-#locify-main .locify-wrapper-bottom .locify-list .long {
-  margin-left: 1em;
-}
-#locify-main .locify-wrapper-bottom .locify-list .status {
-  margin-left: 1em;
-}
-#locify-main .locify-wrapper-bottom .station-info {
-  flex-grow: 1;
-  margin-left: 1.5em;
+@media only screen and (min-width: 480px) {
+  #locify-main #logout-btn {
+    position: absolute;
+    top: 1.5em;
+    right: 0.5em;
+    width: 10em;
+  }
+  #locify-main .current-position {
+    display: flex;
+    justify-content: center;
+    color: steelblue;
+    font-weight: 500;
+  }
+  #locify-main .locify-wrapper-top {
+    margin-top: 5em;
+    display: flex;
+    justify-content: center;
+  }
+  #locify-main .locify-wrapper-top .mui-paper-container {
+    padding: 1.5em;
+  }
+  #locify-main .locify-wrapper-top .mui-raised-button .mui-paper-container {
+    padding: 0;
+  }
+  #locify-main .locify-wrapper-top .mui-drop-down-menu {
+    width: 18em;
+  }
+  #locify-main .locify-wrapper-bottom {
+    display: flex;
+    justify-content: center;
+    padding: 3em;
+  }
+  #locify-main .locify-wrapper-bottom .mui-paper-container {
+    padding: 1.5em;
+  }
+  #locify-main .locify-wrapper-bottom .locify-list {
+    flex-grow: 2;
+  }
+  #locify-main .locify-wrapper-bottom .locify-list .translocifications-enter {
+    opacity: 0.01;
+  }
+  #locify-main .locify-wrapper-bottom .locify-list .translocifications-enter.translocifications-enter-active {
+    opacity: 1;
+    transition: opacity 0.3s ease-in;
+  }
+  #locify-main .locify-wrapper-bottom .locify-list .translocifications-leave {
+    opacity: 1;
+  }
+  #locify-main .locify-wrapper-bottom .locify-list .translocifications-leave.translocifications-leave-active {
+    opacity: 0.01;
+    transition: opacity 0.3s ease-in;
+  }
+  #locify-main .locify-wrapper-bottom .locify-list .message {
+    float: right;
+    position: relative;
+    bottom: 6em;
+    width: 40%;
+  }
+  #locify-main .locify-wrapper-bottom .locify-list .long {
+    margin-left: 1em;
+  }
+  #locify-main .locify-wrapper-bottom .locify-list .status {
+    margin-left: 1em;
+  }
+  #locify-main .locify-wrapper-bottom .station-info {
+    flex-grow: 1;
+    margin-left: 1.5em;
+  }
 }
 #register-body #register-header {
   width: 12em;

@@ -221,7 +221,7 @@ axios.interceptors = {
   createShortMethodsWithData('post', 'put', 'patch');
 })();
 
-},{"./core/InterceptorManager":4,"./core/dispatchRequest":5,"./defaults":6,"./helpers/deprecatedMethod":9,"./helpers/spread":11,"./utils":14,"es6-promise":15}],4:[function(require,module,exports){
+},{"./core/InterceptorManager":4,"./core/dispatchRequest":5,"./defaults":6,"./helpers/deprecatedMethod":9,"./helpers/spread":11,"./utils":14,"es6-promise":16}],4:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -836,6 +836,51 @@ module.exports = {
 };
 
 },{}],15:[function(require,module,exports){
+/*!
+  Copyright (c) 2015 Jed Watson.
+  Licensed under the MIT License (MIT), see
+  http://jedwatson.github.io/classnames
+*/
+
+function classNames() {
+	var classes = '';
+	var arg;
+
+	for (var i = 0; i < arguments.length; i++) {
+		arg = arguments[i];
+		if (!arg) {
+			continue;
+		}
+
+		if ('string' === typeof arg || 'number' === typeof arg) {
+			classes += ' ' + arg;
+		} else if (Object.prototype.toString.call(arg) === '[object Array]') {
+			classes += ' ' + classNames.apply(null, arg);
+		} else if ('object' === typeof arg) {
+			for (var key in arg) {
+				if (!arg.hasOwnProperty(key) || !arg[key]) {
+					continue;
+				}
+				classes += ' ' + key;
+			}
+		}
+	}
+	return classes.substr(1);
+}
+
+// safely export classNames for node / browserify
+if (typeof module !== 'undefined' && module.exports) {
+	module.exports = classNames;
+}
+
+// safely export classNames for RequireJS
+if (typeof define !== 'undefined' && define.amd) {
+	define('classnames', [], function() {
+		return classNames;
+	});
+}
+
+},{}],16:[function(require,module,exports){
 (function (process,global){
 /*!
  * @overview es6-promise - a tiny implementation of Promises/A+.
@@ -1811,7 +1856,42 @@ module.exports = {
 
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":264}],16:[function(require,module,exports){
+},{"_process":264}],17:[function(require,module,exports){
+/**
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ */
+
+/**
+ * Allows extraction of a minified key. Let's the build system minify keys
+ * without losing the ability to dynamically use key strings as values
+ * themselves. Pass in an object with a single key/val pair and it will return
+ * you the string key of that single record. Suppose you want to grab the
+ * value for a key 'className' inside of an object. Key/val minification may
+ * have aliased that key to be 'xa12'. keyOf({className: null}) will return
+ * 'xa12' in that case. Resolve keys you want to use once at startup time, then
+ * reuse those resolutions.
+ */
+"use strict";
+
+var keyOf = function (oneKeyObj) {
+  var key;
+  for (key in oneKeyObj) {
+    if (!oneKeyObj.hasOwnProperty(key)) {
+      continue;
+    }
+    return key;
+  }
+  return null;
+};
+
+module.exports = keyOf;
+},{}],18:[function(require,module,exports){
 module.exports = {
   AppBar: require('./js/app-bar'),
   AppCanvas: require('./js/app-canvas'),
@@ -1863,7 +1943,7 @@ module.exports = {
   }
 };
 
-},{"./js/app-bar":17,"./js/app-canvas":18,"./js/checkbox":19,"./js/date-picker/date-picker":25,"./js/dialog":28,"./js/dialog-window":27,"./js/drop-down-icon":29,"./js/drop-down-menu":30,"./js/enhanced-button":31,"./js/flat-button":34,"./js/floating-action-button":35,"./js/font-icon":36,"./js/icon-button":37,"./js/input":39,"./js/left-nav":40,"./js/menu/menu":43,"./js/menu/menu-item":42,"./js/mixins/classable":45,"./js/mixins/click-awayable":46,"./js/mixins/window-listenable":47,"./js/paper":49,"./js/radio-button":51,"./js/radio-button-group":50,"./js/raised-button":52,"./js/slider":56,"./js/snackbar":57,"./js/svg-icons/navigation-chevron-left":59,"./js/svg-icons/navigation-chevron-right":60,"./js/svg-icons/navigation-menu":61,"./js/svg-icons/svg-icon":62,"./js/tabs/tab":67,"./js/tabs/tabs":69,"./js/text-field":70,"./js/toggle":71,"./js/toolbar":73,"./js/toolbar-group":72,"./js/tooltip":74,"./js/utils/css-event":76,"./js/utils/dom":78,"./js/utils/events":79,"./js/utils/key-code":80,"./js/utils/key-line":81}],17:[function(require,module,exports){
+},{"./js/app-bar":19,"./js/app-canvas":20,"./js/checkbox":21,"./js/date-picker/date-picker":27,"./js/dialog":30,"./js/dialog-window":29,"./js/drop-down-icon":31,"./js/drop-down-menu":32,"./js/enhanced-button":33,"./js/flat-button":36,"./js/floating-action-button":37,"./js/font-icon":38,"./js/icon-button":39,"./js/input":41,"./js/left-nav":42,"./js/menu/menu":45,"./js/menu/menu-item":44,"./js/mixins/classable":47,"./js/mixins/click-awayable":48,"./js/mixins/window-listenable":49,"./js/paper":51,"./js/radio-button":53,"./js/radio-button-group":52,"./js/raised-button":54,"./js/slider":58,"./js/snackbar":59,"./js/svg-icons/navigation-chevron-left":61,"./js/svg-icons/navigation-chevron-right":62,"./js/svg-icons/navigation-menu":63,"./js/svg-icons/svg-icon":64,"./js/tabs/tab":69,"./js/tabs/tabs":71,"./js/text-field":72,"./js/toggle":73,"./js/toolbar":75,"./js/toolbar-group":74,"./js/tooltip":76,"./js/utils/css-event":78,"./js/utils/dom":80,"./js/utils/events":81,"./js/utils/key-code":82,"./js/utils/key-line":83}],19:[function(require,module,exports){
 (function (process){
 var React = require('react');
 var Classable = require('./mixins/classable');
@@ -1960,7 +2040,7 @@ var AppBar = React.createClass({displayName: "AppBar",
 module.exports = AppBar;
 
 }).call(this,require('_process'))
-},{"./icon-button":37,"./mixins/classable":45,"./paper":49,"./svg-icons/navigation-menu":61,"_process":264,"react":261}],18:[function(require,module,exports){
+},{"./icon-button":39,"./mixins/classable":47,"./paper":51,"./svg-icons/navigation-menu":63,"_process":264,"react":261}],20:[function(require,module,exports){
 var React = require('react'),
   Classable = require('./mixins/classable');
 
@@ -1989,7 +2069,7 @@ var AppCanvas = React.createClass({displayName: "AppCanvas",
 
 module.exports = AppCanvas;
 
-},{"./mixins/classable":45,"react":261}],19:[function(require,module,exports){
+},{"./mixins/classable":47,"react":261}],21:[function(require,module,exports){
 var React = require('react');
 var EnhancedSwitch = require('./enhanced-switch');
 var Classable = require('./mixins/classable');
@@ -2051,7 +2131,7 @@ var Checkbox = React.createClass({displayName: "Checkbox",
 
 module.exports = Checkbox;
 
-},{"./enhanced-switch":32,"./mixins/classable":45,"./svg-icons/toggle-check-box-checked":63,"./svg-icons/toggle-check-box-outline-blank":64,"react":261}],20:[function(require,module,exports){
+},{"./enhanced-switch":34,"./mixins/classable":47,"./svg-icons/toggle-check-box-checked":65,"./svg-icons/toggle-check-box-outline-blank":66,"react":261}],22:[function(require,module,exports){
 var React = require('react');
 var Classable = require('../mixins/classable');
 var DateTime = require('../utils/date-time');
@@ -2129,7 +2209,7 @@ var CalendarMonth = React.createClass({displayName: "CalendarMonth",
 });
 
 module.exports = CalendarMonth;
-},{"../mixins/classable":45,"../utils/date-time":77,"./day-button":26,"react":261}],21:[function(require,module,exports){
+},{"../mixins/classable":47,"../utils/date-time":79,"./day-button":28,"react":261}],23:[function(require,module,exports){
 var React = require('react');
 var DateTime = require('../utils/date-time');
 var IconButton = require('../icon-button');
@@ -2228,7 +2308,7 @@ var CalendarToolbar = React.createClass({displayName: "CalendarToolbar",
 
 module.exports = CalendarToolbar;
 
-},{"../icon-button":37,"../svg-icons/navigation-chevron-left":59,"../svg-icons/navigation-chevron-right":60,"../transition-groups/slide-in":75,"../utils/date-time":77,"react":261}],22:[function(require,module,exports){
+},{"../icon-button":39,"../svg-icons/navigation-chevron-left":61,"../svg-icons/navigation-chevron-right":62,"../transition-groups/slide-in":77,"../utils/date-time":79,"react":261}],24:[function(require,module,exports){
 var React = require('react');
 var Classable = require('../mixins/classable');
 var WindowListenable = require('../mixins/window-listenable');
@@ -2433,7 +2513,7 @@ var Calendar = React.createClass({displayName: "Calendar",
 });
 
 module.exports = Calendar;
-},{"../mixins/classable":45,"../mixins/window-listenable":47,"../transition-groups/slide-in":75,"../utils/date-time":77,"../utils/key-code":80,"./calendar-month":20,"./calendar-toolbar":21,"./date-display":23,"react":261}],23:[function(require,module,exports){
+},{"../mixins/classable":47,"../mixins/window-listenable":49,"../transition-groups/slide-in":77,"../utils/date-time":79,"../utils/key-code":82,"./calendar-month":22,"./calendar-toolbar":23,"./date-display":25,"react":261}],25:[function(require,module,exports){
 var React = require('react');
 var Classable = require('../mixins/classable');
 var DateTime = require('../utils/date-time');
@@ -2513,7 +2593,7 @@ var DateDisplay = React.createClass({displayName: "DateDisplay",
 });
 
 module.exports = DateDisplay;
-},{"../mixins/classable":45,"../transition-groups/slide-in":75,"../utils/date-time":77,"react":261}],24:[function(require,module,exports){
+},{"../mixins/classable":47,"../transition-groups/slide-in":77,"../utils/date-time":79,"react":261}],26:[function(require,module,exports){
 var React = require('react');
 var Classable = require('../mixins/classable');
 var WindowListenable = require('../mixins/window-listenable');
@@ -2648,7 +2728,7 @@ var DatePickerDialog = React.createClass({displayName: "DatePickerDialog",
 
 module.exports = DatePickerDialog;
 
-},{"../dialog-window":27,"../flat-button":34,"../mixins/classable":45,"../mixins/window-listenable":47,"../utils/key-code":80,"./calendar":22,"react":261}],25:[function(require,module,exports){
+},{"../dialog-window":29,"../flat-button":36,"../mixins/classable":47,"../mixins/window-listenable":49,"../utils/key-code":82,"./calendar":24,"react":261}],27:[function(require,module,exports){
 var React = require('react');
 var Classable = require('../mixins/classable');
 var WindowListenable = require('../mixins/window-listenable');
@@ -2778,7 +2858,7 @@ var DatePicker = React.createClass({displayName: "DatePicker",
 
 module.exports = DatePicker;
 
-},{"../mixins/classable":45,"../mixins/window-listenable":47,"../text-field":70,"../utils/date-time":77,"../utils/key-code":80,"./date-picker-dialog":24,"react":261}],26:[function(require,module,exports){
+},{"../mixins/classable":47,"../mixins/window-listenable":49,"../text-field":72,"../utils/date-time":79,"../utils/key-code":82,"./date-picker-dialog":26,"react":261}],28:[function(require,module,exports){
 var React = require('react');
 var Classable = require('../mixins/classable');
 var DateTime = require('../utils/date-time');
@@ -2828,7 +2908,7 @@ var DayButton = React.createClass({displayName: "DayButton",
 });
 
 module.exports = DayButton;
-},{"../enhanced-button":31,"../mixins/classable":45,"../utils/date-time":77,"react":261}],27:[function(require,module,exports){
+},{"../enhanced-button":33,"../mixins/classable":47,"../utils/date-time":79,"react":261}],29:[function(require,module,exports){
 var React = require('react');
 var WindowListenable = require('./mixins/window-listenable');
 var CssEvent = require('./utils/css-event');
@@ -3034,7 +3114,7 @@ var DialogWindow = React.createClass({displayName: "DialogWindow",
 
 module.exports = DialogWindow;
 
-},{"./flat-button":34,"./mixins/classable":45,"./mixins/window-listenable":47,"./overlay":48,"./paper":49,"./utils/css-event":76,"./utils/key-code":80,"react":261}],28:[function(require,module,exports){
+},{"./flat-button":36,"./mixins/classable":47,"./mixins/window-listenable":49,"./overlay":50,"./paper":51,"./utils/css-event":78,"./utils/key-code":82,"react":261}],30:[function(require,module,exports){
 var React = require('react');
 var Classable = require('./mixins/classable');
 var DialogWindow = require('./dialog-window');
@@ -3090,7 +3170,7 @@ var Dialog = React.createClass({displayName: "Dialog",
 
 module.exports = Dialog;
 
-},{"./dialog-window":27,"./mixins/classable":45,"react":261}],29:[function(require,module,exports){
+},{"./dialog-window":29,"./mixins/classable":47,"react":261}],31:[function(require,module,exports){
 var React = require('react');
 var Classable = require('./mixins/classable');
 var ClickAwayable = require('./mixins/click-awayable');
@@ -3160,7 +3240,7 @@ var DropDownIcon = React.createClass({displayName: "DropDownIcon",
 
 module.exports = DropDownIcon;
 
-},{"./font-icon":36,"./menu/menu":43,"./mixins/classable":45,"./mixins/click-awayable":46,"./paper":49,"./utils/key-line":81,"react":261}],30:[function(require,module,exports){
+},{"./font-icon":38,"./menu/menu":45,"./mixins/classable":47,"./mixins/click-awayable":48,"./paper":51,"./utils/key-line":83,"react":261}],32:[function(require,module,exports){
 (function (process){
 var React = require('react');
 var Classable = require('./mixins/classable');
@@ -3266,7 +3346,7 @@ var DropDownMenu = React.createClass({displayName: "DropDownMenu",
 module.exports = DropDownMenu;
 
 }).call(this,require('_process'))
-},{"./menu/menu":43,"./mixins/classable":45,"./mixins/click-awayable":46,"./paper":49,"./svg-icons/drop-down-arrow":58,"_process":264,"react":261}],31:[function(require,module,exports){
+},{"./menu/menu":45,"./mixins/classable":47,"./mixins/click-awayable":48,"./paper":51,"./svg-icons/drop-down-arrow":60,"_process":264,"react":261}],33:[function(require,module,exports){
 var React = require('react');
 var KeyCode = require('./utils/key-code');
 var Classable = require('./mixins/classable');
@@ -3434,7 +3514,7 @@ var EnhancedButton = React.createClass({displayName: "EnhancedButton",
 
 module.exports = EnhancedButton;
 
-},{"./mixins/classable":45,"./mixins/window-listenable":47,"./ripples/focus-ripple":54,"./ripples/touch-ripple":55,"./utils/key-code":80,"react":261}],32:[function(require,module,exports){
+},{"./mixins/classable":47,"./mixins/window-listenable":49,"./ripples/focus-ripple":56,"./ripples/touch-ripple":57,"./utils/key-code":82,"react":261}],34:[function(require,module,exports){
 (function (process){
 var React = require('react');
 var KeyCode = require('./utils/key-code');
@@ -3739,7 +3819,7 @@ var EnhancedSwitch = React.createClass({displayName: "EnhancedSwitch",
 module.exports = EnhancedSwitch;
 
 }).call(this,require('_process'))
-},{"./mixins/classable":45,"./mixins/window-listenable":47,"./paper":49,"./ripples/focus-ripple":54,"./ripples/touch-ripple":55,"./utils/key-code":80,"./utils/unique-id":82,"_process":264,"react":261}],33:[function(require,module,exports){
+},{"./mixins/classable":47,"./mixins/window-listenable":49,"./paper":51,"./ripples/focus-ripple":56,"./ripples/touch-ripple":57,"./utils/key-code":82,"./utils/unique-id":84,"_process":264,"react":261}],35:[function(require,module,exports){
 var React = require('react');
 var Classable = require('./mixins/classable');
 
@@ -3854,7 +3934,7 @@ var EnhancedTextarea = React.createClass({displayName: "EnhancedTextarea",
 
 module.exports = EnhancedTextarea;
 
-},{"./mixins/classable":45,"react":261}],34:[function(require,module,exports){
+},{"./mixins/classable":47,"react":261}],36:[function(require,module,exports){
 var React = require('react');
 var Classable = require('./mixins/classable');
 var EnhancedButton = require('./enhanced-button');
@@ -3901,7 +3981,7 @@ var FlatButton = React.createClass({displayName: "FlatButton",
 });
 
 module.exports = FlatButton;
-},{"./enhanced-button":31,"./mixins/classable":45,"react":261}],35:[function(require,module,exports){
+},{"./enhanced-button":33,"./mixins/classable":47,"react":261}],37:[function(require,module,exports){
 (function (process){
 var React = require('react');
 var Classable = require('./mixins/classable');
@@ -4028,7 +4108,7 @@ var RaisedButton = React.createClass({displayName: "RaisedButton",
 module.exports = RaisedButton;
 
 }).call(this,require('_process'))
-},{"./enhanced-button":31,"./font-icon":36,"./mixins/classable":45,"./paper":49,"_process":264,"react":261}],36:[function(require,module,exports){
+},{"./enhanced-button":33,"./font-icon":38,"./mixins/classable":47,"./paper":51,"_process":264,"react":261}],38:[function(require,module,exports){
 var React = require('react');
 var Classable = require('./mixins/classable');
 
@@ -4052,7 +4132,7 @@ var FontIcon = React.createClass({displayName: "FontIcon",
 });
 
 module.exports = FontIcon;
-},{"./mixins/classable":45,"react":261}],37:[function(require,module,exports){
+},{"./mixins/classable":47,"react":261}],39:[function(require,module,exports){
 (function (process){
 var React = require('react');
 var Classable = require('./mixins/classable');
@@ -4181,7 +4261,7 @@ var IconButton = React.createClass({displayName: "IconButton",
 module.exports = IconButton;
 
 }).call(this,require('_process'))
-},{"./enhanced-button":31,"./font-icon":36,"./mixins/classable":45,"./tooltip":74,"_process":264,"react":261}],38:[function(require,module,exports){
+},{"./enhanced-button":33,"./font-icon":38,"./mixins/classable":47,"./tooltip":76,"_process":264,"react":261}],40:[function(require,module,exports){
 var React = require('react');
 
 var InkBar = React.createClass({displayName: "InkBar",
@@ -4207,7 +4287,7 @@ var InkBar = React.createClass({displayName: "InkBar",
 });
 
 module.exports = InkBar;
-},{"react":261}],39:[function(require,module,exports){
+},{"react":261}],41:[function(require,module,exports){
 (function (process){
 var React = require('react');
 var Classable = require('./mixins/classable');
@@ -4354,7 +4434,7 @@ var Input = React.createClass({displayName: "Input",
 module.exports = Input;
 
 }).call(this,require('_process'))
-},{"./mixins/classable":45,"_process":264,"classnames":83,"react":261}],40:[function(require,module,exports){
+},{"./mixins/classable":47,"_process":264,"classnames":15,"react":261}],42:[function(require,module,exports){
 var React = require('react'),
   KeyCode = require('./utils/key-code'),
   Classable = require('./mixins/classable'),
@@ -4465,7 +4545,7 @@ var LeftNav = React.createClass({displayName: "LeftNav",
 
 module.exports = LeftNav;
 
-},{"./menu/menu":43,"./mixins/classable":45,"./mixins/window-listenable":47,"./overlay":48,"./paper":49,"./utils/key-code":80,"react":261}],41:[function(require,module,exports){
+},{"./menu/menu":45,"./mixins/classable":47,"./mixins/window-listenable":49,"./overlay":50,"./paper":51,"./utils/key-code":82,"react":261}],43:[function(require,module,exports){
 var React = require('react');
 var Classable = require('../mixins/classable');
 
@@ -4509,7 +4589,7 @@ var LinkMenuItem = React.createClass({displayName: "LinkMenuItem",
 
 module.exports = LinkMenuItem;
 
-},{"../mixins/classable":45,"react":261}],42:[function(require,module,exports){
+},{"../mixins/classable":47,"react":261}],44:[function(require,module,exports){
 var React = require('react');
 var Classable = require('../mixins/classable');
 var FontIcon = require('../font-icon');
@@ -4616,7 +4696,7 @@ var MenuItem = React.createClass({displayName: "MenuItem",
 
 module.exports = MenuItem;
 
-},{"../font-icon":36,"../mixins/classable":45,"../toggle":71,"react":261}],43:[function(require,module,exports){
+},{"../font-icon":38,"../mixins/classable":47,"../toggle":73,"react":261}],45:[function(require,module,exports){
 var React = require('react');
 var CssEvent = require('../utils/css-event');
 var Dom = require('../utils/dom');
@@ -4943,7 +5023,7 @@ var Menu = React.createClass({displayName: "Menu",
 
 module.exports = Menu;
 
-},{"../mixins/classable":45,"../mixins/click-awayable":46,"../paper":49,"../utils/css-event":76,"../utils/dom":78,"../utils/key-line":81,"./link-menu-item":41,"./menu-item":42,"./subheader-menu-item":44,"react":261}],44:[function(require,module,exports){
+},{"../mixins/classable":47,"../mixins/click-awayable":48,"../paper":51,"../utils/css-event":78,"../utils/dom":80,"../utils/key-line":83,"./link-menu-item":43,"./menu-item":44,"./subheader-menu-item":46,"react":261}],46:[function(require,module,exports){
 var React = require('react');
 
 var SubheaderMenuItem = React.createClass({displayName: "SubheaderMenuItem",
@@ -4962,7 +5042,7 @@ var SubheaderMenuItem = React.createClass({displayName: "SubheaderMenuItem",
 });
 
 module.exports = SubheaderMenuItem;
-},{"react":261}],45:[function(require,module,exports){
+},{"react":261}],47:[function(require,module,exports){
 var React = require('react');
 var classNames = require('classnames');
 
@@ -5012,7 +5092,7 @@ module.exports = {
 
 }
 
-},{"classnames":83,"react":261}],46:[function(require,module,exports){
+},{"classnames":15,"react":261}],48:[function(require,module,exports){
 var React = require('react');
 var Events = require('../utils/events');
 var Dom = require('../utils/dom');
@@ -5051,7 +5131,7 @@ module.exports = {
 
 };
 
-},{"../utils/dom":78,"../utils/events":79,"react":261}],47:[function(require,module,exports){
+},{"../utils/dom":80,"../utils/events":81,"react":261}],49:[function(require,module,exports){
 var Events = require('../utils/events');
 
 module.exports = {
@@ -5075,7 +5155,7 @@ module.exports = {
   }
   
 }
-},{"../utils/events":79}],48:[function(require,module,exports){
+},{"../utils/events":81}],50:[function(require,module,exports){
 var React = require('react'),
   Classable = require('./mixins/classable');
 
@@ -5134,7 +5214,7 @@ var Overlay = React.createClass({displayName: "Overlay",
 });
 
 module.exports = Overlay;
-},{"./mixins/classable":45,"react":261}],49:[function(require,module,exports){
+},{"./mixins/classable":47,"react":261}],51:[function(require,module,exports){
 var React = require('react'),
   Classable = require('./mixins/classable');
 
@@ -5194,7 +5274,7 @@ var Paper = React.createClass({displayName: "Paper",
 
 module.exports = Paper;
 
-},{"./mixins/classable":45,"react":261}],50:[function(require,module,exports){
+},{"./mixins/classable":47,"react":261}],52:[function(require,module,exports){
 (function (process){
 var React = require('react');
 var Paper = require('./paper');
@@ -5310,7 +5390,7 @@ var RadioButtonGroup = React.createClass({displayName: "RadioButtonGroup",
 module.exports = RadioButtonGroup;
 
 }).call(this,require('_process'))
-},{"./enhanced-switch":32,"./mixins/classable":45,"./paper":49,"./radio-button":51,"_process":264,"react":261}],51:[function(require,module,exports){
+},{"./enhanced-switch":34,"./mixins/classable":47,"./paper":51,"./radio-button":53,"_process":264,"react":261}],53:[function(require,module,exports){
 var React = require('react');
 var Classable = require('./mixins/classable');
 var EnhancedSwitch = require('./enhanced-switch');
@@ -5377,7 +5457,7 @@ var RadioButton = React.createClass({displayName: "RadioButton",
 
 module.exports = RadioButton;
 
-},{"./enhanced-switch":32,"./mixins/classable":45,"./svg-icons/toggle-radio-button-off":65,"./svg-icons/toggle-radio-button-on":66,"react":261}],52:[function(require,module,exports){
+},{"./enhanced-switch":34,"./mixins/classable":47,"./svg-icons/toggle-radio-button-off":67,"./svg-icons/toggle-radio-button-on":68,"react":261}],54:[function(require,module,exports){
 var React = require('react');
 var Classable = require('./mixins/classable');
 var EnhancedButton = require('./enhanced-button');
@@ -5480,7 +5560,7 @@ var RaisedButton = React.createClass({displayName: "RaisedButton",
 });
 
 module.exports = RaisedButton;
-},{"./enhanced-button":31,"./mixins/classable":45,"./paper":49,"react":261}],53:[function(require,module,exports){
+},{"./enhanced-button":33,"./mixins/classable":47,"./paper":51,"react":261}],55:[function(require,module,exports){
 var React = require('react');
 var Classable = require('../mixins/classable');
 
@@ -5516,7 +5596,7 @@ var RippleCircle = React.createClass({displayName: "RippleCircle",
 });
 
 module.exports = RippleCircle;
-},{"../mixins/classable":45,"react":261}],54:[function(require,module,exports){
+},{"../mixins/classable":47,"react":261}],56:[function(require,module,exports){
 var React = require('react');
 var Classable = require('../mixins/classable');
 
@@ -5558,7 +5638,7 @@ var FocusRipple = React.createClass({displayName: "FocusRipple",
 
 module.exports = FocusRipple;
 
-},{"../mixins/classable":45,"react":261}],55:[function(require,module,exports){
+},{"../mixins/classable":47,"react":261}],57:[function(require,module,exports){
 var React = require('react');
 var Classable = require('../mixins/classable');
 var Dom = require('../utils/dom');
@@ -5743,7 +5823,7 @@ var TouchRipple = React.createClass({displayName: "TouchRipple",
 
 module.exports = TouchRipple;
 
-},{"../mixins/classable":45,"../utils/dom":78,"./circle":53,"react":261}],56:[function(require,module,exports){
+},{"../mixins/classable":47,"../utils/dom":80,"./circle":55,"react":261}],58:[function(require,module,exports){
 var React = require('react'),
     Paper = require('./paper'),
     Classable = require('./mixins/classable'),
@@ -5923,7 +6003,7 @@ var Slider = React.createClass({displayName: "Slider",
 
 module.exports = Slider;
 
-},{"./mixins/classable":45,"./paper":49,"react":261,"react-draggable2":84}],57:[function(require,module,exports){
+},{"./mixins/classable":47,"./paper":51,"react":261,"react-draggable2":85}],59:[function(require,module,exports){
 var React = require('react');
 var CssEvent = require('./utils/css-event');
 var Classable = require('./mixins/classable');
@@ -6001,7 +6081,7 @@ var Snackbar = React.createClass({displayName: "Snackbar",
 
 module.exports = Snackbar;
 
-},{"./flat-button":34,"./mixins/classable":45,"./mixins/click-awayable":46,"./utils/css-event":76,"react":261}],58:[function(require,module,exports){
+},{"./flat-button":36,"./mixins/classable":47,"./mixins/click-awayable":48,"./utils/css-event":78,"react":261}],60:[function(require,module,exports){
 var React = require('react');
 var SvgIcon = require('./svg-icon');
 
@@ -6018,7 +6098,7 @@ var DropDownArrow = React.createClass({displayName: "DropDownArrow",
 });
 
 module.exports = DropDownArrow;
-},{"./svg-icon":62,"react":261}],59:[function(require,module,exports){
+},{"./svg-icon":64,"react":261}],61:[function(require,module,exports){
 var React = require('react');
 var SvgIcon = require('./svg-icon');
 
@@ -6035,7 +6115,7 @@ var NavigationChevronLeft = React.createClass({displayName: "NavigationChevronLe
 });
 
 module.exports = NavigationChevronLeft;
-},{"./svg-icon":62,"react":261}],60:[function(require,module,exports){
+},{"./svg-icon":64,"react":261}],62:[function(require,module,exports){
 var React = require('react');
 var SvgIcon = require('./svg-icon');
 
@@ -6054,7 +6134,7 @@ var NavigationChevronLeft = React.createClass({displayName: "NavigationChevronLe
 module.exports = NavigationChevronLeft;
 
 
-},{"./svg-icon":62,"react":261}],61:[function(require,module,exports){
+},{"./svg-icon":64,"react":261}],63:[function(require,module,exports){
 var React = require('react');
 var SvgIcon = require('./svg-icon');
 
@@ -6071,7 +6151,7 @@ var NavigationMenu = React.createClass({displayName: "NavigationMenu",
 });
 
 module.exports = NavigationMenu;
-},{"./svg-icon":62,"react":261}],62:[function(require,module,exports){
+},{"./svg-icon":64,"react":261}],64:[function(require,module,exports){
 var React = require('react');
 var Classable = require('../mixins/classable');
 
@@ -6095,7 +6175,7 @@ var SvgIcon = React.createClass({displayName: "SvgIcon",
 });
 
 module.exports = SvgIcon;
-},{"../mixins/classable":45,"react":261}],63:[function(require,module,exports){
+},{"../mixins/classable":47,"react":261}],65:[function(require,module,exports){
 var React = require('react');
 var SvgIcon = require('./svg-icon');
 
@@ -6112,7 +6192,7 @@ var ToggleCheckBoxChecked = React.createClass({displayName: "ToggleCheckBoxCheck
 });
 
 module.exports = ToggleCheckBoxChecked;
-},{"./svg-icon":62,"react":261}],64:[function(require,module,exports){
+},{"./svg-icon":64,"react":261}],66:[function(require,module,exports){
 var React = require('react');
 var SvgIcon = require('./svg-icon');
 
@@ -6129,7 +6209,7 @@ var ToggleCheckBoxOutlineBlank = React.createClass({displayName: "ToggleCheckBox
 });
 
 module.exports = ToggleCheckBoxOutlineBlank;
-},{"./svg-icon":62,"react":261}],65:[function(require,module,exports){
+},{"./svg-icon":64,"react":261}],67:[function(require,module,exports){
 var React = require('react');
 var SvgIcon = require('./svg-icon');
 
@@ -6146,7 +6226,7 @@ var RadioButtonOff = React.createClass({displayName: "RadioButtonOff",
 });
 
 module.exports = RadioButtonOff;
-},{"./svg-icon":62,"react":261}],66:[function(require,module,exports){
+},{"./svg-icon":64,"react":261}],68:[function(require,module,exports){
 var React = require('react');
 var SvgIcon = require('./svg-icon');
 
@@ -6163,7 +6243,7 @@ var RadioButtonOn = React.createClass({displayName: "RadioButtonOn",
 });
 
 module.exports = RadioButtonOn;
-},{"./svg-icon":62,"react":261}],67:[function(require,module,exports){
+},{"./svg-icon":64,"react":261}],69:[function(require,module,exports){
 var React = require('react');
 var Classable = require('../mixins/classable');
 var TabTemplate = require('./tabTemplate');
@@ -6202,7 +6282,7 @@ var Tab = React.createClass({displayName: "Tab",
 });
 
 module.exports = Tab;
-},{"../mixins/classable":45,"./tabTemplate":68,"react":261}],68:[function(require,module,exports){
+},{"../mixins/classable":47,"./tabTemplate":70,"react":261}],70:[function(require,module,exports){
 var React = require('react');
 
 var TabTemplate = React.createClass({displayName: "TabTemplate",
@@ -6218,7 +6298,7 @@ var TabTemplate = React.createClass({displayName: "TabTemplate",
 });
 
 module.exports = TabTemplate;
-},{"react":261}],69:[function(require,module,exports){
+},{"react":261}],71:[function(require,module,exports){
 var React = require('react/addons');
 var Tab = require('./tab');
 var TabTemplate = require('./tabTemplate');
@@ -6316,7 +6396,7 @@ var Tabs = React.createClass({displayName: "Tabs",
 
 module.exports = Tabs;
 
-},{"../ink-bar":38,"./tab":67,"./tabTemplate":68,"react/addons":89}],70:[function(require,module,exports){
+},{"../ink-bar":40,"./tab":69,"./tabTemplate":70,"react/addons":89}],72:[function(require,module,exports){
 (function (process){
 var React = require('react');
 var Classable = require('./mixins/classable');
@@ -6535,7 +6615,7 @@ var TextField = React.createClass({displayName: "TextField",
 module.exports = TextField;
 
 }).call(this,require('_process'))
-},{"./enhanced-textarea":33,"./mixins/classable":45,"./utils/unique-id":82,"_process":264,"react":261}],71:[function(require,module,exports){
+},{"./enhanced-textarea":35,"./mixins/classable":47,"./utils/unique-id":84,"_process":264,"react":261}],73:[function(require,module,exports){
 var React = require('react');
 var Classable = require('./mixins/classable');
 var Paper = require('./paper');
@@ -6599,7 +6679,7 @@ var Toggle = React.createClass({displayName: "Toggle",
 
 module.exports = Toggle;
 
-},{"./enhanced-switch":32,"./mixins/classable":45,"./paper":49,"react":261}],72:[function(require,module,exports){
+},{"./enhanced-switch":34,"./mixins/classable":47,"./paper":51,"react":261}],74:[function(require,module,exports){
 var Classable = require('./mixins/classable');
 var React = require('react');
 
@@ -6629,7 +6709,7 @@ var ToolbarGroup = React.createClass({displayName: "ToolbarGroup",
 
 module.exports = ToolbarGroup;
 
-},{"./mixins/classable":45,"react":261}],73:[function(require,module,exports){
+},{"./mixins/classable":47,"react":261}],75:[function(require,module,exports){
 var Classable = require('./mixins/classable');
 var React = require('react');
 
@@ -6652,7 +6732,7 @@ var Toolbar = React.createClass({displayName: "Toolbar",
 
 module.exports = Toolbar;
 
-},{"./mixins/classable":45,"react":261}],74:[function(require,module,exports){
+},{"./mixins/classable":47,"react":261}],76:[function(require,module,exports){
 var React = require('react');
 var Classable = require('./mixins/classable');
 
@@ -6712,7 +6792,7 @@ var Tooltip = React.createClass({displayName: "Tooltip",
 
 module.exports = Tooltip;
 
-},{"./mixins/classable":45,"react":261}],75:[function(require,module,exports){
+},{"./mixins/classable":47,"react":261}],77:[function(require,module,exports){
 var React = require('react/addons');
 var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 var Classable = require('../mixins/classable');
@@ -6761,7 +6841,7 @@ var SlideIn = React.createClass({displayName: "SlideIn",
 });
 
 module.exports = SlideIn;
-},{"../mixins/classable":45,"react/addons":89}],76:[function(require,module,exports){
+},{"../mixins/classable":47,"react/addons":89}],78:[function(require,module,exports){
 var Events = require('./events');
 
 module.exports = {
@@ -6814,7 +6894,7 @@ module.exports = {
   }
 
 };
-},{"./events":79}],77:[function(require,module,exports){
+},{"./events":81}],79:[function(require,module,exports){
 module.exports = {
 
   addDays: function(d, days) {
@@ -6947,7 +7027,7 @@ module.exports = {
   }
 
 }
-},{}],78:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 module.exports = {
 
   isDescendant: function(parent, child) {
@@ -7019,7 +7099,7 @@ module.exports = {
   }
   
 }
-},{}],79:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 module.exports = {
 
   once: function(el, type, callback) {
@@ -7054,7 +7134,7 @@ module.exports = {
     }
   }
 };
-},{}],80:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 module.exports = {
   DOWN: 40,
   ESC: 27,
@@ -7065,7 +7145,7 @@ module.exports = {
   TAB: 9,
   UP: 38
 }
-},{}],81:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 module.exports = {
 
   Desktop: {
@@ -7080,7 +7160,7 @@ module.exports = {
   }
 }
 
-},{}],82:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 var index = 0;
 
 module.exports = {
@@ -7089,52 +7169,7 @@ module.exports = {
   }
 };
 
-},{}],83:[function(require,module,exports){
-/*!
-  Copyright (c) 2015 Jed Watson.
-  Licensed under the MIT License (MIT), see
-  http://jedwatson.github.io/classnames
-*/
-
-function classNames() {
-	var classes = '';
-	var arg;
-
-	for (var i = 0; i < arguments.length; i++) {
-		arg = arguments[i];
-		if (!arg) {
-			continue;
-		}
-
-		if ('string' === typeof arg || 'number' === typeof arg) {
-			classes += ' ' + arg;
-		} else if (Object.prototype.toString.call(arg) === '[object Array]') {
-			classes += ' ' + classNames.apply(null, arg);
-		} else if ('object' === typeof arg) {
-			for (var key in arg) {
-				if (!arg.hasOwnProperty(key) || !arg[key]) {
-					continue;
-				}
-				classes += ' ' + key;
-			}
-		}
-	}
-	return classes.substr(1);
-}
-
-// safely export classNames for node / browserify
-if (typeof module !== 'undefined' && module.exports) {
-	module.exports = classNames;
-}
-
-// safely export classNames for RequireJS
-if (typeof define !== 'undefined' && define.amd) {
-	define('classnames', [], function() {
-		return classNames;
-	});
-}
-
-},{}],84:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 'use strict';
 
 var React = require('react/addons');
@@ -7805,318 +7840,7 @@ module.exports = React.createClass({
 
 });
 
-},{"react/addons":89}],85:[function(require,module,exports){
-/**
- * Copyright 2013-2014, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule ResponderEventPlugin
- */
-
-"use strict";
-
-var EventConstants = require('react/lib/EventConstants');
-var EventPluginUtils = require('react/lib/EventPluginUtils');
-var EventPropagators = require('react/lib/EventPropagators');
-var SyntheticEvent = require('react/lib/SyntheticEvent');
-
-var accumulateInto = require('react/lib/accumulateInto');
-var keyOf = require('react/lib/keyOf');
-
-var isStartish = EventPluginUtils.isStartish;
-var isMoveish = EventPluginUtils.isMoveish;
-var isEndish = EventPluginUtils.isEndish;
-var executeDirectDispatch = EventPluginUtils.executeDirectDispatch;
-var hasDispatches = EventPluginUtils.hasDispatches;
-var executeDispatchesInOrderStopAtTrue =
-  EventPluginUtils.executeDispatchesInOrderStopAtTrue;
-
-/**
- * ID of element that should respond to touch/move types of interactions, as
- * indicated explicitly by relevant callbacks.
- */
-var responderID = null;
-var isPressing = false;
-
-var eventTypes = {
-  /**
-   * On a `touchStart`/`mouseDown`, is it desired that this element become the
-   * responder?
-   */
-  startShouldSetResponder: {
-    phasedRegistrationNames: {
-      bubbled: keyOf({onStartShouldSetResponder: null}),
-      captured: keyOf({onStartShouldSetResponderCapture: null})
-    }
-  },
-
-  /**
-   * On a `scroll`, is it desired that this element become the responder? This
-   * is usually not needed, but should be used to retroactively infer that a
-   * `touchStart` had occured during momentum scroll. During a momentum scroll,
-   * a touch start will be immediately followed by a scroll event if the view is
-   * currently scrolling.
-   */
-  scrollShouldSetResponder: {
-    phasedRegistrationNames: {
-      bubbled: keyOf({onScrollShouldSetResponder: null}),
-      captured: keyOf({onScrollShouldSetResponderCapture: null})
-    }
-  },
-
-  /**
-   * On a `touchMove`/`mouseMove`, is it desired that this element become the
-   * responder?
-   */
-  moveShouldSetResponder: {
-    phasedRegistrationNames: {
-      bubbled: keyOf({onMoveShouldSetResponder: null}),
-      captured: keyOf({onMoveShouldSetResponderCapture: null})
-    }
-  },
-
-  /**
-   * Direct responder events dispatched directly to responder. Do not bubble.
-   */
-  responderMove: {registrationName: keyOf({onResponderMove: null})},
-  responderRelease: {registrationName: keyOf({onResponderRelease: null})},
-  responderTerminationRequest: {
-    registrationName: keyOf({onResponderTerminationRequest: null})
-  },
-  responderGrant: {registrationName: keyOf({onResponderGrant: null})},
-  responderReject: {registrationName: keyOf({onResponderReject: null})},
-  responderTerminate: {registrationName: keyOf({onResponderTerminate: null})}
-};
-
-/**
- * Performs negotiation between any existing/current responder, checks to see if
- * any new entity is interested in becoming responder, performs that handshake
- * and returns any events that must be emitted to notify the relevant parties.
- *
- * A note about event ordering in the `EventPluginHub`.
- *
- * Suppose plugins are injected in the following order:
- *
- * `[R, S, C]`
- *
- * To help illustrate the example, assume `S` is `SimpleEventPlugin` (for
- * `onClick` etc) and `R` is `ResponderEventPlugin`.
- *
- * "Deferred-Dispatched Events":
- *
- * - The current event plugin system will traverse the list of injected plugins,
- *   in order, and extract events by collecting the plugin's return value of
- *   `extractEvents()`.
- * - These events that are returned from `extractEvents` are "deferred
- *   dispatched events".
- * - When returned from `extractEvents`, deferred-dispatched events contain an
- *   "accumulation" of deferred dispatches.
- * - These deferred dispatches are accumulated/collected before they are
- *   returned, but processed at a later time by the `EventPluginHub` (hence the
- *   name deferred).
- *
- * In the process of returning their deferred-dispatched events, event plugins
- * themselves can dispatch events on-demand without returning them from
- * `extractEvents`. Plugins might want to do this, so that they can use event
- * dispatching as a tool that helps them decide which events should be extracted
- * in the first place.
- *
- * "On-Demand-Dispatched Events":
- *
- * - On-demand-dispatched events are not returned from `extractEvents`.
- * - On-demand-dispatched events are dispatched during the process of returning
- *   the deferred-dispatched events.
- * - They should not have side effects.
- * - They should be avoided, and/or eventually be replaced with another
- *   abstraction that allows event plugins to perform multiple "rounds" of event
- *   extraction.
- *
- * Therefore, the sequence of event dispatches becomes:
- *
- * - `R`s on-demand events (if any)   (dispatched by `R` on-demand)
- * - `S`s on-demand events (if any)   (dispatched by `S` on-demand)
- * - `C`s on-demand events (if any)   (dispatched by `C` on-demand)
- * - `R`s extracted events (if any)   (dispatched by `EventPluginHub`)
- * - `S`s extracted events (if any)   (dispatched by `EventPluginHub`)
- * - `C`s extracted events (if any)   (dispatched by `EventPluginHub`)
- *
- * In the case of `ResponderEventPlugin`: If the `startShouldSetResponder`
- * on-demand dispatch returns `true` (and some other details are satisfied) the
- * `onResponderGrant` deferred dispatched event is returned from
- * `extractEvents`. The sequence of dispatch executions in this case
- * will appear as follows:
- *
- * - `startShouldSetResponder` (`ResponderEventPlugin` dispatches on-demand)
- * - `touchStartCapture`       (`EventPluginHub` dispatches as usual)
- * - `touchStart`              (`EventPluginHub` dispatches as usual)
- * - `responderGrant/Reject`   (`EventPluginHub` dispatches as usual)
- *
- * @param {string} topLevelType Record from `EventConstants`.
- * @param {string} topLevelTargetID ID of deepest React rendered element.
- * @param {object} nativeEvent Native browser event.
- * @return {*} An accumulation of synthetic events.
- */
-function setResponderAndExtractTransfer(
-    topLevelType,
-    topLevelTargetID,
-    nativeEvent) {
-  var shouldSetEventType =
-    isStartish(topLevelType) ? eventTypes.startShouldSetResponder :
-    isMoveish(topLevelType) ? eventTypes.moveShouldSetResponder :
-    eventTypes.scrollShouldSetResponder;
-
-  var bubbleShouldSetFrom = responderID || topLevelTargetID;
-  var shouldSetEvent = SyntheticEvent.getPooled(
-    shouldSetEventType,
-    bubbleShouldSetFrom,
-    nativeEvent
-  );
-  EventPropagators.accumulateTwoPhaseDispatches(shouldSetEvent);
-  var wantsResponderID = executeDispatchesInOrderStopAtTrue(shouldSetEvent);
-  if (!shouldSetEvent.isPersistent()) {
-    shouldSetEvent.constructor.release(shouldSetEvent);
-  }
-
-  if (!wantsResponderID || wantsResponderID === responderID) {
-    return null;
-  }
-  var extracted;
-  var grantEvent = SyntheticEvent.getPooled(
-    eventTypes.responderGrant,
-    wantsResponderID,
-    nativeEvent
-  );
-
-  EventPropagators.accumulateDirectDispatches(grantEvent);
-  if (responderID) {
-    var terminationRequestEvent = SyntheticEvent.getPooled(
-      eventTypes.responderTerminationRequest,
-      responderID,
-      nativeEvent
-    );
-    EventPropagators.accumulateDirectDispatches(terminationRequestEvent);
-    var shouldSwitch = !hasDispatches(terminationRequestEvent) ||
-      executeDirectDispatch(terminationRequestEvent);
-    if (!terminationRequestEvent.isPersistent()) {
-      terminationRequestEvent.constructor.release(terminationRequestEvent);
-    }
-
-    if (shouldSwitch) {
-      var terminateType = eventTypes.responderTerminate;
-      var terminateEvent = SyntheticEvent.getPooled(
-        terminateType,
-        responderID,
-        nativeEvent
-      );
-      EventPropagators.accumulateDirectDispatches(terminateEvent);
-      extracted = accumulateInto(extracted, [grantEvent, terminateEvent]);
-      responderID = wantsResponderID;
-    } else {
-      var rejectEvent = SyntheticEvent.getPooled(
-        eventTypes.responderReject,
-        wantsResponderID,
-        nativeEvent
-      );
-      EventPropagators.accumulateDirectDispatches(rejectEvent);
-      extracted = accumulateInto(extracted, rejectEvent);
-    }
-  } else {
-    extracted = accumulateInto(extracted, grantEvent);
-    responderID = wantsResponderID;
-  }
-  return extracted;
-}
-
-/**
- * A transfer is a negotiation between a currently set responder and the next
- * element to claim responder status. Any start event could trigger a transfer
- * of responderID. Any move event could trigger a transfer, so long as there is
- * currently a responder set (in other words as long as the user is pressing
- * down).
- *
- * @param {string} topLevelType Record from `EventConstants`.
- * @return {boolean} True if a transfer of responder could possibly occur.
- */
-function canTriggerTransfer(topLevelType) {
-  return topLevelType === EventConstants.topLevelTypes.topScroll ||
-         isStartish(topLevelType) ||
-         (isPressing && isMoveish(topLevelType));
-}
-
-/**
- * Event plugin for formalizing the negotiation between claiming locks on
- * receiving touches.
- */
-var ResponderEventPlugin = {
-
-  getResponderID: function() {
-    return responderID;
-  },
-
-  eventTypes: eventTypes,
-
-  /**
-   * @param {string} topLevelType Record from `EventConstants`.
-   * @param {DOMEventTarget} topLevelTarget The listening component root node.
-   * @param {string} topLevelTargetID ID of `topLevelTarget`.
-   * @param {object} nativeEvent Native browser event.
-   * @return {*} An accumulation of synthetic events.
-   * @see {EventPluginHub.extractEvents}
-   */
-  extractEvents: function(
-      topLevelType,
-      topLevelTarget,
-      topLevelTargetID,
-      nativeEvent) {
-    var extracted;
-    // Must have missed an end event - reset the state here.
-    if (responderID && isStartish(topLevelType)) {
-      responderID = null;
-    }
-    if (isStartish(topLevelType)) {
-      isPressing = true;
-    } else if (isEndish(topLevelType)) {
-      isPressing = false;
-    }
-    if (canTriggerTransfer(topLevelType)) {
-      var transfer = setResponderAndExtractTransfer(
-        topLevelType,
-        topLevelTargetID,
-        nativeEvent
-      );
-      if (transfer) {
-        extracted = accumulateInto(extracted, transfer);
-      }
-    }
-    // Now that we know the responder is set correctly, we can dispatch
-    // responder type events (directly to the responder).
-    var type = isMoveish(topLevelType) ? eventTypes.responderMove :
-      isEndish(topLevelType) ? eventTypes.responderRelease :
-      isStartish(topLevelType) ? eventTypes.responderStart : null;
-    if (type) {
-      var gesture = SyntheticEvent.getPooled(
-        type,
-        responderID || '',
-        nativeEvent
-      );
-      EventPropagators.accumulateDirectDispatches(gesture);
-      extracted = accumulateInto(extracted, gesture);
-    }
-    if (type === eventTypes.responderRelease) {
-      responderID = null;
-    }
-    return extracted;
-  }
-
-};
-
-module.exports = ResponderEventPlugin;
-
-},{"react/lib/EventConstants":104,"react/lib/EventPluginUtils":108,"react/lib/EventPropagators":109,"react/lib/SyntheticEvent":197,"react/lib/accumulateInto":207,"react/lib/keyOf":246}],86:[function(require,module,exports){
+},{"react/addons":89}],86:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -8145,7 +7869,7 @@ var SyntheticUIEvent = require('react/lib/SyntheticUIEvent');
 var TouchEventUtils = require('./TouchEventUtils');
 var ViewportMetrics = require('react/lib/ViewportMetrics');
 
-var keyOf = require('react/lib/keyOf');
+var keyOf = require('fbjs/lib/keyOf');
 var topLevelTypes = EventConstants.topLevelTypes;
 
 var isStartish = EventPluginUtils.isStartish;
@@ -8194,19 +7918,18 @@ function getDistance(coords, nativeEvent) {
   );
 }
 
+var touchEvents = [
+  topLevelTypes.topTouchStart,
+  topLevelTypes.topTouchCancel,
+  topLevelTypes.topTouchEnd,
+  topLevelTypes.topTouchMove,
+];
+
 var dependencies = [
   topLevelTypes.topMouseDown,
   topLevelTypes.topMouseMove,
-  topLevelTypes.topMouseUp
-];
-
-if (EventPluginUtils.useTouchEvents) {
-  dependencies.push(
-    topLevelTypes.topTouchEnd,
-    topLevelTypes.topTouchStart,
-    topLevelTypes.topTouchMove
-  );
-}
+  topLevelTypes.topMouseUp,
+].concat(touchEvents);
 
 var eventTypes = {
   touchTap: {
@@ -8218,14 +7941,16 @@ var eventTypes = {
   }
 };
 
-var now = function() {
+var now = (function() {
   if (Date.now) {
-    return Date.now();
+    return Date.now;
   } else {
     // IE8 support: http://stackoverflow.com/questions/9430357/please-explain-why-and-how-new-date-works-as-workaround-for-date-now-in
-    return +new Date;
+    return function () {
+      return +new Date;
+    }
   }
-}
+})();
 
 var TapEventPlugin = {
 
@@ -8247,7 +7972,8 @@ var TapEventPlugin = {
       topLevelType,
       topLevelTarget,
       topLevelTargetID,
-      nativeEvent) {
+      nativeEvent,
+      nativeEventTarget) {
 
     if (isTouch(topLevelType)) {
       lastTouchEvent = now();
@@ -8266,7 +7992,8 @@ var TapEventPlugin = {
       event = SyntheticUIEvent.getPooled(
         eventTypes.touchTap,
         topLevelTargetID,
-        nativeEvent
+        nativeEvent,
+        nativeEventTarget
       );
     }
     if (isStartish(topLevelType)) {
@@ -8284,7 +8011,7 @@ var TapEventPlugin = {
 
 module.exports = TapEventPlugin;
 
-},{"./TouchEventUtils":87,"react/lib/EventConstants":104,"react/lib/EventPluginUtils":108,"react/lib/EventPropagators":109,"react/lib/SyntheticUIEvent":203,"react/lib/ViewportMetrics":206,"react/lib/keyOf":246}],87:[function(require,module,exports){
+},{"./TouchEventUtils":87,"fbjs/lib/keyOf":17,"react/lib/EventConstants":104,"react/lib/EventPluginUtils":108,"react/lib/EventPropagators":109,"react/lib/SyntheticUIEvent":203,"react/lib/ViewportMetrics":206}],87:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -8330,16 +8057,12 @@ module.exports = TouchEventUtils;
 
 },{}],88:[function(require,module,exports){
 module.exports = function injectTapEventPlugin () {
-  var React = require("react");
-  React.initializeTouchEvents(true);
-
   require('react/lib/EventPluginHub').injection.injectEventPluginsByName({
-    "ResponderEventPlugin": require('./ResponderEventPlugin.js'),
     "TapEventPlugin":       require('./TapEventPlugin.js')
   });
 };
 
-},{"./ResponderEventPlugin.js":85,"./TapEventPlugin.js":86,"react":261,"react/lib/EventPluginHub":106}],89:[function(require,module,exports){
+},{"./TapEventPlugin.js":86,"react/lib/EventPluginHub":106}],89:[function(require,module,exports){
 module.exports = require('./lib/ReactWithAddons');
 
 },{"./lib/ReactWithAddons":189}],90:[function(require,module,exports){
@@ -30218,7 +29941,7 @@ var Body = React.createClass({displayName: "Body",
 
 module.exports = Body;
 
-},{"axios":1,"material-ui":16,"react":261}],263:[function(require,module,exports){
+},{"axios":1,"material-ui":18,"react":261}],263:[function(require,module,exports){
 var React = require('react'),
 	injectTapEventPlugin = require("react-tap-event-plugin"),
 	Register = require("./elements/Register.js");
@@ -30242,32 +29965,66 @@ window.onload = function () {
 var process = module.exports = {};
 var queue = [];
 var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
 
 function drainQueue() {
     if (draining) {
         return;
     }
+    var timeout = setTimeout(cleanUpNextTick);
     draining = true;
-    var currentQueue;
+
     var len = queue.length;
     while(len) {
         currentQueue = queue;
         queue = [];
-        var i = -1;
-        while (++i < len) {
-            currentQueue[i]();
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
         }
+        queueIndex = -1;
         len = queue.length;
     }
+    currentQueue = null;
     draining = false;
+    clearTimeout(timeout);
 }
+
 process.nextTick = function (fun) {
-    queue.push(fun);
-    if (!draining) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
         setTimeout(drainQueue, 0);
     }
 };
 
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
 process.title = 'browser';
 process.browser = true;
 process.env = {};
@@ -30289,7 +30046,6 @@ process.binding = function (name) {
     throw new Error('process.binding is not supported');
 };
 
-// TODO(shtylman)
 process.cwd = function () { return '/' };
 process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');

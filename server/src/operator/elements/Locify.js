@@ -170,7 +170,7 @@ var Body = React.createClass({
 				$this.refresh();
 			});
 		});
-		connection = new WebSocket("ws://80.112.151.115:8001/");
+		connection = new WebSocket("ws://localhost:8001/");
 		connection.onopen = function () {
 			console.log("Connection opened");
 			connection.send(JSON.stringify({

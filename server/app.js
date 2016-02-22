@@ -45,9 +45,9 @@ var log = function(text) {
 	var d = new Date(), logfile = "log/" + d.getDate() + "-" + d.getMonth() + "-" +  d.getYear() + ".log";
 	fs.stat(logfile, function(err) {
 		if (err == null) {
-			fs.appendFile(logfile, JSON.stringify(text));
+			fs.appendFile(logfile, "##" + d.toString() + "\n" + JSON.stringify(text));
 		} else {
-			fs.writeFile(logfile, JSON.stringify(text));
+			fs.writeFile(logfile, "##" + d.toString() + "\n" + JSON.stringify(text));
 		}
 	});
 }
@@ -154,7 +154,7 @@ app.post('/api/user/login', function (req, res) {
 		} else {
 			res.status(401).send('Unauthorized');
 		}
-	} else if (req.body.email, req.body.password) {
+	} else if (req.body.email && req.body.password) {
 		db.query(mysql.format("SELECT * FROM ?? WHERE ?? = ?", ['users', 'email', req.body.email]), function(err, rows) {
 			if (err) {
 				log(err);

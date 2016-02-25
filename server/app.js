@@ -12,8 +12,8 @@ var tokens = {
 };
 var connections = {}, db;
 
-app.use(express.static('user'));
-app.use("/operator", express.static('operator'));
+//app.use(express.static('user'));
+//app.use("/operator", express.static('operator'));
 app.use(bodyParser.json());
 
 app.use(function(req, res, next) {
